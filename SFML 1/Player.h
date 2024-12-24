@@ -9,13 +9,16 @@ private:
 	Animation animation;
 
 	unsigned int row;
-	float speed;
+	sf::Vector2f movement;
+
+	float acceleration;
+	float deceleration;
+	float maxSpeed;
 
 public:
 	Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
-	void Update(float deltaTime);
-	void Draw(sf::RenderWindow window);
-
+	void Update(float deltaTime, sf::Vector2i mousePos);
+	void Draw(sf::RenderWindow& window);
 
 };
 
