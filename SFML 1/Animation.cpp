@@ -14,18 +14,21 @@ Animation::Animation(sf::Texture* texture, sf::Vector2u imageCount, float switch
 
 void Animation::update(int row, float deltaTime)
 {
-	currentImage.y = row;
+	currentImage.x = row;
 	totalTime += deltaTime;
 
 	if (totalTime >= switchTime)
 	{
 		totalTime -= switchTime;
-		currentImage.x++;
-		if (currentImage.x >= imageCount.x)
+		currentImage.y++;
+		if (currentImage.y >= imageCount.y)
 		{
-			currentImage.x = 0;
+			currentImage.y = 0;
 		}
+
 	}
 	uvRect.left = currentImage.x * uvRect.width;
+	uvRect.top = currentImage.y * uvRect.height;
+
 
 }
