@@ -8,7 +8,10 @@ using namespace std;
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Resize);
+    sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(512.0, 512.0));
+
     sf::RectangleShape player(sf::Vector2f(25, 40));
+
 
     player.setFillColor(sf::Color::White);
     player.setOrigin(12.5, 20);  // Set the origin to the center of the player
@@ -106,8 +109,8 @@ int main() {
             velocity.x *= deceleration;
 
         // Cap the speed to prevent going too fast
-        if (std::abs(velocity.x) > maxSpeed) velocity.x = maxSpeed * (velocity.x / std::abs(velocity.x));
-        if (std::abs(velocity.y) > maxSpeed) velocity.y = maxSpeed * (velocity.y / std::abs(velocity.y));
+        if (abs(velocity.x) > maxSpeed) velocity.x = maxSpeed * (velocity.x / abs(velocity.x));
+        if (abs(velocity.y) > maxSpeed) velocity.y = maxSpeed * (velocity.y / abs(velocity.y));
 
         // Move the player with the velocity
         player.move(velocity);
