@@ -81,7 +81,22 @@ int main() {
 
         enemy1.GetCollider().CheckCollision(player.GetCollider(), 0.0f);
         enemy2.GetCollider().CheckCollision(player.GetCollider(), 1.0f);
-        
+
+        //for (auto& bullet : bullets) {
+        //    if (enemy1.GetCollider().CheckCollision(bullet->GetCollider(), 0.0f)) {
+        //        // Bullet hits enemy1, e.g., reduce health or destroy enemy
+        //        std::cout << "Bullet hit Enemy 1!" << std::endl;
+        //        delete bullet;
+        //        bullet = nullptr;
+        //    }
+        //    if (enemy2.GetCollider().CheckCollision(bullet->GetCollider(), 0.0f)) {
+        //        // Bullet hits enemy2, e.g., reduce health or destroy enemy
+        //        std::cout << "Bullet hit Enemy 2!" << std::endl;
+        //        delete bullet;
+        //        bullet = nullptr;
+        //    }
+        //}
+
         view.setCenter(player.GetPosition());
 
         // Deleting Bullet
@@ -98,15 +113,21 @@ int main() {
 
 
 
-
         // Player clamping (keep player inside world bounds)
         sf::Vector2f playerPos = player.GetPosition();
+        sf::Vector2f playerSize = player.GetSize();
+
         if (playerPos.x < worldBounds.left)
             player.setPosition(worldBounds.left, playerPos.y);
-        if (playerPos.x + player.GetSize().x > worldBounds.left + worldBounds.width)
-            player.setPosition(worldBounds.left + worldBounds.width - player.GetSize().x, playerPos.y);
 
+        if (playerPos.x + playerSize.x > worldBounds.left + worldBounds.width)
+            player.setPosition(worldBounds.left + worldBounds.width - playerSize.x, playerPos.y);
 
+        if (playerPos.y < worldBounds.top)
+            player.setPosition(playerPos.x, worldBounds.top);
+
+        if (playerPos.y + playerSize.y > worldBounds.top + worldBounds.height)
+            player.setPosition(playerPos.x, worldBounds.top + worldBounds.height - playerSize.y);
 
 
         window.clear();
