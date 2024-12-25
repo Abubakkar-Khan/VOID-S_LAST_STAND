@@ -30,14 +30,23 @@ int main() {
     float deltaTime = 0.0f;
     sf::Clock clock;
 
+
+
+    // Boundry Wall
+    sf::FloatRect worldBounds(0, 0, window.getSize().x, window.getSize().y);
+    sf::RectangleShape boundary(sf::Vector2f(worldBounds.width - 2, worldBounds.height));
+    boundary.setPosition(worldBounds.left - 5, worldBounds.top);
+    boundary.setOutlineColor(sf::Color::Red);
+    boundary.setOutlineThickness(5);
+    boundary.setFillColor(sf::Color::Transparent);
+
     window.setFramerateLimit(60);  // Limits FPS to 60
 
-    std::vector<Bullet> bullets;
+    vector<Bullet*> bullets;
     
     
+    // Game loop
     while (window.isOpen()) {
-        // Inside game loop
-
         deltaTime = clock.restart().asSeconds(); // Use seconds
 
         sf::Event evnt;
@@ -66,26 +75,50 @@ int main() {
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            bullets.push_back(Bullet(player.GetPosition(), worldMousePosInt, 600.0));
+            bullets.push_back(new Bullet (player.GetPosition(), worldMousePosInt, 500.0));
         }
         
-
-       
 
         enemy1.GetCollider().CheckCollision(player.GetCollider(), 0.0f);
         enemy2.GetCollider().CheckCollision(player.GetCollider(), 1.0f);
         
         view.setCenter(player.GetPosition());
 
+        // Deleting Bullet
+        for (auto bullet = bullets.begin(); bullet != bullets.end();) {
+            if ((*bullet)->isDead()) {
+                delete* bullet;  // Delete the bullet
+                bullet = bullets.erase(bullet);  // Remove from vector and continue
+            }
+            else {
+                ++bullet;
+            }
+        }
+
+
+
+
+
+        // Player clamping (keep player inside world bounds)
+        sf::Vector2f playerPos = player.GetPosition();
+        if (playerPos.x < worldBounds.left)
+            player.setPosition(worldBounds.left, playerPos.y);
+        if (playerPos.x + player.GetSize().x > worldBounds.left + worldBounds.width)
+            player.setPosition(worldBounds.left + worldBounds.width - player.GetSize().x, playerPos.y);
+
+
+
 
         window.clear();
+        
+        window.draw(boundary);
     
         // Draw the player
         player.Draw(window);
         for (auto& bullet : bullets)
         {
-            bullet.update(deltaTime);
-            bullet.Draw(window);
+            bullet->update(deltaTime);
+            bullet->Draw(window);
         }
         enemy1.Draw(window);
         enemy2.Draw(window);

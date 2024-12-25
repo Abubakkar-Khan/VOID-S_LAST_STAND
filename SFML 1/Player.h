@@ -23,6 +23,8 @@ public:
 	void Update(float deltaTime, sf::Vector2i mousePos);
 	void Draw(sf::RenderWindow& window);
 	sf::Vector2f GetPosition() { return body.getPosition(); }
+	void setPosition(float x, float y) { body.setPosition(x, y); }
+	sf::Vector2f GetSize() { return body.getSize(); }
 
 	Collider& GetCollider() { return collider; }
 };
