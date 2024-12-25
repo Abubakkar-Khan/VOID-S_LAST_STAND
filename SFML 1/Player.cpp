@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime) :
-	animation(texture, imageCount, switchTime), movement(0.0f, 0.0f)
+	animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), collider(body)
 {
 	row = 2;
 
@@ -10,8 +10,8 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime) 
     maxSpeed = 8.0f;  // Maximum speed of the body
 
 
-    body.setSize(sf::Vector2f(25, 40));
-    body.setOrigin(12.5, 20); 
+    body.setSize(sf::Vector2f(10, 10));
+    body.setOrigin(5, 5); 
     body.setTexture(texture);
     body.setPosition(206.0f, 206.0f);
 }
@@ -52,11 +52,9 @@ void Player::Update(float deltaTime, sf::Vector2i mousePos)
     // Calculate the angle using atan2 (angle in radians)
     float angle = atan2(direction.y, direction.x) * 180 / 3.14159f;  // Convert radians to degrees
 
-    // Set the rotation of the player to the calculated angle
     body.setRotation(angle + 90); // + 90 for right angle
 
-    // Update animation
-    animation.update(row, deltaTime);
+    //animation.update(row, deltaTime);
 
     // Apply movement and update the player position
     body.setTextureRect(animation.uvRect);

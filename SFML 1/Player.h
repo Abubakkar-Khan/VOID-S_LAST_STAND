@@ -13,8 +13,10 @@ private:
 	sf::Vector2f movement;
 
 	float acceleration;
-	float deceleration;
+	float deceleration;	
 	float maxSpeed;
+
+	Collider collider;
 
 public:
 	Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
@@ -22,6 +24,6 @@ public:
 	void Draw(sf::RenderWindow& window);
 	sf::Vector2f GetPosition() { return body.getPosition(); }
 
-	Collider GetCollider() { return  Collider(body); }
+	Collider& GetCollider() { return collider; }
 };
 
