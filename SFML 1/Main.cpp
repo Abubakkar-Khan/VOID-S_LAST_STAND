@@ -63,16 +63,30 @@ int main() {
 
         player.Update(deltaTime, worldMousePosInt);
 
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            bullets.push_back(Bullet(player.GetPosition(), worldMousePosInt, 600.0));
+        }
+        
+
+       
+
         enemy1.GetCollider().CheckCollision(player.GetCollider(), 0.0f);
         enemy2.GetCollider().CheckCollision(player.GetCollider(), 1.0f);
         
         view.setCenter(player.GetPosition());
 
+
         window.clear();
     
         // Draw the player
         player.Draw(window);
-
+        for (auto& bullet : bullets)
+        {
+            bullet.update(deltaTime);
+            bullet.Draw(window);
+        }
         enemy1.Draw(window);
         enemy2.Draw(window);
 
