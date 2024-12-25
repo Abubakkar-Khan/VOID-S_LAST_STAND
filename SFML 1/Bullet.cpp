@@ -1,8 +1,12 @@
 #include "Bullet.h"
 
+
+
 Bullet::Bullet(sf::Vector2f position, sf::Vector2i target, float speed) 
     : speed(speed), collider(shape)
 {
+    dead = false;
+
     shape.setSize(sf::Vector2f(1.f, 1.f)); // Set bullet size
     shape.setFillColor(sf::Color::Cyan); // Bullet color
 
@@ -37,12 +41,18 @@ void Bullet::Draw(sf::RenderWindow& window)
     window.draw(shape);  // Draw the bullet on the window
 }
 
-bool Bullet::isDead() const
+bool Bullet::isDead()
 {
     // Bullet is dead if lifetime exceeded or if it's off-screen
     // Check if the bullet's age has exceeded its lifetime
     if (age >= lifetime)
-        return true;
+        dead =  true;
+    else
+        dead =  false;  // Bullet is still alive
+    return dead;  
+}
 
-    return false;  // Bullet is still alive
+void Bullet::setDead(bool d)
+{
+    dead = d;
 }

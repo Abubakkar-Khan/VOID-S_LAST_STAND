@@ -11,7 +11,8 @@ static const float VIEW_HEIGHT = 500;
 
 static void ResizeView(const sf::RenderWindow& window, sf::View& view)
 {
-    float aspectRatio = window.getSize().x / window.getSize().y;
+
+    float aspectRatio = static_cast<float>(window.getSize().x) / static_cast<float>(window.getSize().y);
     view.setSize(VIEW_HEIGHT * aspectRatio, VIEW_HEIGHT);
 }
 
@@ -19,11 +20,19 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Resize);
     sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
 
+    ResizeView(window, view);
+
     sf::Texture playerTexture;
-    playerTexture.loadFromFile("textures/p3.png");
+    if (!playerTexture.loadFromFile("textures/p3.png")) {
+        cerr << "Error loading player texture!" << endl;
+        return -1;
+    }
 
     sf::Texture enemyTexture;
-    enemyTexture.loadFromFile("textures/alien.png");
+    if (!enemyTexture.loadFromFile("textures/alien.png")) {
+        cerr << "Error loading enemy texture!" << endl;
+        return -1;
+    }
 
     Player player(&playerTexture, sf::Vector2u(1, 1), 0.20f);
 
@@ -39,22 +48,24 @@ int main() {
     sf::FloatRect worldBounds(0, 0, window.getSize().x, window.getSize().y);
     sf::RectangleShape boundary(sf::Vector2f(worldBounds.width - 2, worldBounds.height));
     boundary.setPosition(worldBounds.left - 5, worldBounds.top);
-    boundary.setOutlineColor(sf::Color::Red);
-    boundary.setOutlineThickness(5);
+    boundary.setOutlineColor(sf::Color::White);
+    boundary.setOutlineThickness(2);
     boundary.setFillColor(sf::Color::Transparent);
 
     window.setFramerateLimit(60);  // Limits FPS to 60
 
     vector<Bullet*> bullets;
     vector<Enemy*> enemies;
-    int n = 1;
+
+    int n = 5;
     int i = 0;
 
-    if (i < n);
+    while (i < n)  // Use a loop to add enemies
     {
-        enemies.push_back(new Enemy(nullptr, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(200.0f, 400.0f)));
+        enemies.push_back(new Enemy(nullptr, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(200.0f * n, 400.0f)));
         i++;
     }
+
     
     // Game loop
     while (window.isOpen()) {
@@ -92,8 +103,8 @@ int main() {
             bullets.push_back(new Bullet (player.GetPosition(), worldMousePosInt, 500.0));
         }
 
-        enemies.back()->GetCollider().CheckCollision(player.GetCollider(), 0.0f);
-        enemies.back()->GetCollider().CheckCollision(player.GetCollider(), 1.0f);
+        for (auto& enemy : enemies)
+            enemy->GetCollider().CheckCollision(player.GetCollider(), 0.0f);
 
         //for (auto& bullet : bullets) {
         //    if (enemies.back()->GetCollider().CheckCollision(bullet->GetCollider(), 0.0f)) {
@@ -112,16 +123,7 @@ int main() {
 
         view.setCenter(player.GetPosition());
 
-        // Deleting Bullet
-        for (auto bullet = bullets.begin(); bullet != bullets.end();) {
-            if ((*bullet)->isDead()) {
-                delete* bullet;  // Delete the bullet
-                bullet = bullets.erase(bullet);  // Remove from vector and continue
-            }
-            else {
-                ++bullet;
-            }
-        }
+        
 
 
 
@@ -141,7 +143,24 @@ int main() {
         if (playerPos.y + playerSize.y > worldBounds.top + worldBounds.height)
             player.setPosition(playerPos.x, worldBounds.top + worldBounds.height - playerSize.y);
 
-        enemies.back()->Update(playerPos, deltaTime);
+        // Check Enemies-Enemies Collisions
+        for (size_t i = 0; i < enemies.size(); ++i) {
+            for (size_t j = i + 1; j < enemies.size(); ++j) {
+                if (enemies[i]->GetCollider().CheckCollision(enemies[j]->GetCollider(), 0.0f)) {
+                    // collision
+                }
+            }
+        }
+
+        for (auto bullet = bullets.begin(); bullet != bullets.end();) {
+            if ((*bullet)->isDead()) {
+                delete* bullet;  // Delete the bullet
+                bullet = bullets.erase(bullet);  // Remove from vector and continue
+            }
+            else {
+                ++bullet;
+            }
+        }
 
         window.clear();
         
@@ -149,21 +168,37 @@ int main() {
     
         // Draw the player
         player.Draw(window);
-        for (auto& bullet : bullets) {
-            // Check collision between bullet and enemy1
-            if (bullet->GetCollider().CheckCollision(enemies.back()->GetCollider(), 0.02f)) {
-                cout << "Dead\n";
+
+        for (auto bullet = bullets.begin(); bullet != bullets.end();) {
+            bool hit = false;  // Flag to check if the bullet has hit any enemy
+
+            // Check for bullet-enemy collisions
+            for (auto& enemy : enemies) {
+                if ((*bullet)->GetCollider().CheckCollision(enemy->GetCollider(), 2.5f)) {
+                    cout << "Bullet hit enemy!" <<  endl;
+
+                    // Delete the bullet
+                    delete *bullet;  // Free memory
+                    bullet = bullets.erase(bullet);  // Remove from vector and continue the loop
+                    hit = true;  // Set flag to indicate bullet hit an enemy
+                    break;  // Exit the inner loop after first collision
+                }
             }
 
-            //// Check collision between bullet and enemy2
-            if (bullet->GetCollider().CheckCollision(enemies.back()->GetCollider(), 0.02f)) {
-                cout << "Dead\n";
+            // If the bullet wasn't hit by any enemy, just continue to the next bullet
+            if (!hit) {
+                (*bullet)->update(deltaTime);  // Update the bullet
+                (*bullet)->Draw(window);  // Draw the bullet
+                ++bullet;  // Move to next bullet
             }
+}
 
-            bullet->update(deltaTime);
-            bullet->Draw(window);
-        }
-        enemies.back()->Draw(window);
+
+        for (auto& enemy : enemies)
+            enemy->Update(playerPos, deltaTime);
+
+        for (auto& enemy : enemies)
+            enemy->Draw(window);
 
         window.setView(view);
         window.display();
