@@ -6,6 +6,7 @@ class Collider
 private:
 	sf::RectangleShape& body;
 
+
 public:
 	Collider(sf::RectangleShape& body);
 	Collider(const sf::RectangleShape& body);

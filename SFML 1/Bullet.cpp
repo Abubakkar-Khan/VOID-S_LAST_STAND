@@ -1,7 +1,7 @@
 #include "Bullet.h"
 
-Bullet::Bullet(sf::Vector2f position, sf::Vector2i target, float speed)
-    : speed(speed)
+Bullet::Bullet(sf::Vector2f position, sf::Vector2i target, float speed) 
+    : speed(speed), collider(shape)
 {
     shape.setSize(sf::Vector2f(1.f, 1.f)); // Set bullet size
     shape.setFillColor(sf::Color::Cyan); // Bullet color

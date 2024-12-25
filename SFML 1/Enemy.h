@@ -6,11 +6,15 @@ class Enemy
 {
 private:
 	sf::RectangleShape body;
+	Collider collider;
 
 public:
 	Enemy(sf::Texture* texture, sf::Vector2f size, sf::Vector2f position);
 	 
 	void Draw(sf::RenderWindow& window);
-	Collider GetCollider() { return Collider(body); }
+	
+	void Update(sf::Vector2f playerPos, float daltaTime);
+
+	Collider& GetCollider() { return collider; }
 };
 

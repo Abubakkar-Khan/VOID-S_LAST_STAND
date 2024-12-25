@@ -22,10 +22,13 @@ int main() {
     sf::Texture playerTexture;
     playerTexture.loadFromFile("textures/p3.png");
 
+    sf::Texture enemyTexture;
+    enemyTexture.loadFromFile("textures/alien.png");
+
     Player player(&playerTexture, sf::Vector2u(1, 1), 0.20f);
 
-    Enemy enemy1(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(500.0f, 200.0f));
-    Enemy enemy2(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(200.0f, 400.0f));
+    /*Enemy enemy1(&enemyTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(500.0f, 200.0f));
+    Enemy enemy2(&enemyTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(200.0f, 400.0f));*/
 
     float deltaTime = 0.0f;
     sf::Clock clock;
@@ -43,7 +46,15 @@ int main() {
     window.setFramerateLimit(60);  // Limits FPS to 60
 
     vector<Bullet*> bullets;
-    
+    vector<Enemy*> enemies;
+    int n = 1;
+    int i = 0;
+
+    if (i < n);
+    {
+        enemies.push_back(new Enemy(nullptr, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(200.0f, 400.0f)));
+        i++;
+    }
     
     // Game loop
     while (window.isOpen()) {
@@ -71,30 +82,32 @@ int main() {
 
 
         player.Update(deltaTime, worldMousePosInt);
+        sf::Vector2f playerPos = player.GetPosition();
 
+        
+        
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             bullets.push_back(new Bullet (player.GetPosition(), worldMousePosInt, 500.0));
         }
-        
 
-        enemy1.GetCollider().CheckCollision(player.GetCollider(), 0.0f);
-        enemy2.GetCollider().CheckCollision(player.GetCollider(), 1.0f);
+        enemies.back()->GetCollider().CheckCollision(player.GetCollider(), 0.0f);
+        enemies.back()->GetCollider().CheckCollision(player.GetCollider(), 1.0f);
 
         //for (auto& bullet : bullets) {
-        //    if (enemy1.GetCollider().CheckCollision(bullet->GetCollider(), 0.0f)) {
+        //    if (enemies.back()->GetCollider().CheckCollision(bullet->GetCollider(), 0.0f)) {
         //        // Bullet hits enemy1, e.g., reduce health or destroy enemy
         //        std::cout << "Bullet hit Enemy 1!" << std::endl;
         //        delete bullet;
         //        bullet = nullptr;
         //    }
-        //    if (enemy2.GetCollider().CheckCollision(bullet->GetCollider(), 0.0f)) {
-        //        // Bullet hits enemy2, e.g., reduce health or destroy enemy
-        //        std::cout << "Bullet hit Enemy 2!" << std::endl;
-        //        delete bullet;
-        //        bullet = nullptr;
-        //    }
+            //if (enemies.back()->.GetCollider().CheckCollision(bullet->GetCollider(), 0.0f)) {
+            //    // Bullet hits enemy2, e.g., reduce health or destroy enemy
+            //    std::cout << "Bullet hit Enemy 2!" << std::endl;
+            //    delete bullet;
+            //    bullet = nullptr;
+            //}
         //}
 
         view.setCenter(player.GetPosition());
@@ -114,7 +127,6 @@ int main() {
 
 
         // Player clamping (keep player inside world bounds)
-        sf::Vector2f playerPos = player.GetPosition();
         sf::Vector2f playerSize = player.GetSize();
 
         if (playerPos.x < worldBounds.left)
@@ -129,6 +141,7 @@ int main() {
         if (playerPos.y + playerSize.y > worldBounds.top + worldBounds.height)
             player.setPosition(playerPos.x, worldBounds.top + worldBounds.height - playerSize.y);
 
+        enemies.back()->Update(playerPos, deltaTime);
 
         window.clear();
         
@@ -136,13 +149,21 @@ int main() {
     
         // Draw the player
         player.Draw(window);
-        for (auto& bullet : bullets)
-        {
+        for (auto& bullet : bullets) {
+            // Check collision between bullet and enemy1
+            if (bullet->GetCollider().CheckCollision(enemies.back()->GetCollider(), 0.02f)) {
+                cout << "Dead\n";
+            }
+
+            //// Check collision between bullet and enemy2
+            if (bullet->GetCollider().CheckCollision(enemies.back()->GetCollider(), 0.02f)) {
+                cout << "Dead\n";
+            }
+
             bullet->update(deltaTime);
             bullet->Draw(window);
         }
-        enemy1.Draw(window);
-        enemy2.Draw(window);
+        enemies.back()->Draw(window);
 
         window.setView(view);
         window.display();
