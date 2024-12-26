@@ -10,7 +10,7 @@
 using namespace std;
 
 static const float VIEW_HEIGHT = 500;
-static const float SPAWN_INTERVAL = 3.0f;
+static const float SPAWN_INTERVAL = 2.0f;
 
 static void ResizeView(const sf::RenderWindow& window, sf::View& view)
 {
@@ -20,6 +20,19 @@ static void ResizeView(const sf::RenderWindow& window, sf::View& view)
 
 int main() {
     srand(static_cast<unsigned int>(time(0)));
+
+    sf::Text timerText;
+    sf::Font font;
+    if (!font.loadFromFile("ARCADE.ttf")) 
+    {  // Make sure you have a valid font path
+        cerr << "Error loading font!" << endl;
+        return -1;
+    }
+
+    timerText.setFont(font);
+    timerText.setCharacterSize(30);
+    timerText.setFillColor(sf::Color::White);
+
 
     sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Resize);
     sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
@@ -46,7 +59,6 @@ int main() {
     float deltaTime = 0.0f;
     sf::Clock clock;
 
-
     // Boundry Wall
     sf::FloatRect worldBounds(0, 0, window.getSize().x, window.getSize().y);
     sf::RectangleShape boundary(sf::Vector2f(worldBounds.width - 2, worldBounds.height));
@@ -62,9 +74,24 @@ int main() {
 
     float spawnTimer = 0.0f;
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    
     // Game loop
     while (window.isOpen()) {
         deltaTime = clock.restart().asSeconds(); // Use seconds
+        static float elapsedTime = 0;
+        elapsedTime += deltaTime;
+
+
+        int minutes = static_cast<int>(elapsedTime) / 60;
+        int seconds = static_cast<int>(elapsedTime) % 60;
+
+        string timeString = (minutes < 10 ? "0" : "") + to_string(minutes) + ":"
+            + (seconds < 10 ? "0" : "") + to_string(seconds);
+
+        timerText.setString(timeString);
 
         sf::Event evnt;
         while (window.pollEvent(evnt)) {
@@ -96,8 +123,12 @@ int main() {
             bullets.push_back(new Bullet (player.GetPosition(), worldMousePosInt, 500.0));
         }
 
-        for (auto& enemy : enemies)
-            enemy->GetCollider().CheckCollision(player.GetCollider(), 0.0f);
+        for (auto& enemy : enemies) {
+            if(enemy->GetCollider().CheckCollision(player.GetCollider(), 10.0f))
+            {
+                player.setDead(true);
+            }
+        }
 
 
         // Spawn new enemies after the interval
@@ -117,9 +148,9 @@ int main() {
 
 
         view.setCenter(player.GetPosition());
+        timerText.setPosition(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.2);
 
         
-
         // Player clamping (keep player inside world bounds)
         sf::Vector2f playerSize = player.GetSize();
 
@@ -135,15 +166,12 @@ int main() {
         if (playerPos.y + playerSize.y > worldBounds.top + worldBounds.height)
             player.setPosition(playerPos.x, worldBounds.top + worldBounds.height - playerSize.y);
 
-        // Check Enemies-Enemies Collisions
-        for (size_t i = 0; i < enemies.size(); ++i) {
-            for (size_t j = i + 1; j < enemies.size(); ++j) {
-                enemies[i]->GetCollider().CheckCollision(enemies[j]->GetCollider(), 0.0f)   ;
-                    // collision
-                
-            }
-        }
 
+        // Check Enemies-Enemies Collisions
+        for (size_t i = 0; i < enemies.size(); ++i) 
+            for (size_t j = i + 1; j < enemies.size(); ++j) 
+                enemies[i]->GetCollider().CheckCollision(enemies[j]->GetCollider(), 0.0f)   ;
+            
         window.clear();
         
         window.draw(boundary);
@@ -157,14 +185,26 @@ int main() {
             // Check for bullet-enemy collisions
             for (auto& enemy : enemies) {
                 if ((*bullet)->GetCollider().CheckCollision(enemy->GetCollider(), 2.5f)) {
-                    cout << "Bullet hit enemy!" <<  endl;
-
+                    enemy->setDead(true);
 
                     // Delete the bullet
                     delete *bullet;  // Free memory
                     bullet = bullets.erase(bullet);  // Remove from vector and continue the loop
                     hit = true;  // Set flag to indicate bullet hit an enemy
                     break;  // Exit the inner loop after first collision
+                }
+            }
+
+            for (auto enemy = enemies.begin(); enemy != enemies.end(); )
+            {
+                if ( (*enemy)->isDead() )
+                {
+                    delete* enemy;
+                    enemy = enemies.erase(enemy);
+                }
+                else
+                {
+                    enemy++;
                 }
             }
 
@@ -175,7 +215,7 @@ int main() {
                 ++bullet;  // Move to next bullet
             }
         }
-
+        window.draw(timerText);
 
         for (auto& enemy : enemies)
             enemy->Update(playerPos, deltaTime);

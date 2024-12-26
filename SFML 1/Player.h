@@ -9,6 +9,9 @@ private:
 	sf::RectangleShape body;
 	Animation animation;
 
+	bool dead;
+	unsigned int health;
+
 	unsigned int row;
 	sf::Vector2f movement;
 
@@ -25,6 +28,9 @@ public:
 	sf::Vector2f GetPosition() { return body.getPosition(); }
 	void setPosition(float x, float y) { body.setPosition(x, y); }
 	sf::Vector2f GetSize() { return body.getSize(); }
+	bool isDead();
+	void setDead(bool die);
+
 
 	Collider& GetCollider() { return collider; }
 };

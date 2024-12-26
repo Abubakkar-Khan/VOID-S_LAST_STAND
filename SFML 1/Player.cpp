@@ -1,8 +1,11 @@
 #include "Player.h"
+#include <iostream>
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime) :
 	animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), collider(body)
 {
+    health = 10;
+
 	row = 2;
 
     acceleration = 0.2f;  // How fast the body accelerates
@@ -66,3 +69,27 @@ void Player::Draw(sf::RenderWindow& window)
 {
     window.draw(body);
 }
+
+bool Player::isDead()
+{
+    return dead;
+}
+
+void Player::setDead(bool die)
+{
+    
+    if (die) {
+        if (health != 0)
+            health--;
+        std::cout << "! Player Health: " << health << std::endl;
+    }
+
+    if (health <= 0)
+    {
+        dead = true; 
+        std::cout << "Player is DEAD: "<< std::endl;
+        std::cout << "Player is DEAD: "<< std::endl;
+        std::cout << "GAME OVER: "<< std::endl;
+    }
+}
+
