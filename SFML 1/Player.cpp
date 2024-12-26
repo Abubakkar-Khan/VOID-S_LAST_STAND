@@ -1,11 +1,9 @@
 #include "Player.h"
 #include <iostream>
 
-Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime) :
-	animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), collider(body)
+Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float health) :
+	animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), collider(body), health(health)
 {
-    health = 10;
-
 	row = 2;
 
     acceleration = 0.2f;  // How fast the body accelerates

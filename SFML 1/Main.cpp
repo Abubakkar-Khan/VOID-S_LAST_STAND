@@ -6,8 +6,11 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "HealthBar.h"
 
 using namespace std;
+
+const float MAX_PLAYER_HEALTH = 100.0f;
 
 static const float VIEW_HEIGHT = 500;
 static const float SPAWN_INTERVAL = 2.0f;
@@ -51,10 +54,7 @@ int main() {
         return -1;
     }
 
-    Player player(&playerTexture, sf::Vector2u(1, 1), 0.20f);
-
-    /*Enemy enemy1(&enemyTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(500.0f, 200.0f));
-    Enemy enemy2(&enemyTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(200.0f, 400.0f));*/
+    Player player(&playerTexture, sf::Vector2u(1, 1), 0.20f, MAX_PLAYER_HEALTH);
 
     float deltaTime = 0.0f;
     sf::Clock clock;
@@ -66,6 +66,8 @@ int main() {
     boundary.setOutlineColor(sf::Color::White);
     boundary.setOutlineThickness(2);
     boundary.setFillColor(sf::Color::Transparent);
+
+
 
     window.setFramerateLimit(60);  // Limits FPS to 60
 
@@ -123,12 +125,15 @@ int main() {
             bullets.push_back(new Bullet (player.GetPosition(), worldMousePosInt, 500.0));
         }
 
+        
         for (auto& enemy : enemies) {
             if(enemy->GetCollider().CheckCollision(player.GetCollider(), 10.0f))
             {
                 player.setDead(true);
             }
         }
+        // update health
+        
 
 
         // Spawn new enemies after the interval
@@ -148,8 +153,12 @@ int main() {
 
 
         view.setCenter(player.GetPosition());
-        timerText.setPosition(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.2);
+        
+        // UI / UX 
+        timerText.setPosition(player.GetPosition().x - view.getSize().x / 100, player.GetPosition().y - view.getSize().y / 2.2);
+        HealthBar healthBar(MAX_PLAYER_HEALTH, sf::Vector2f(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.3), sf::Vector2f(150.0f, 5.0f));
 
+        healthBar.Update(player.GetHealth());
         
         // Player clamping (keep player inside world bounds)
         sf::Vector2f playerSize = player.GetSize();
@@ -180,7 +189,7 @@ int main() {
         player.Draw(window);
 
         for (auto bullet = bullets.begin(); bullet != bullets.end();) {
-            bool hit = false;  // Flag to check if the bullet has hit any enemy
+            bool hit = false; 
 
             // Check for bullet-enemy collisions
             for (auto& enemy : enemies) {
@@ -189,9 +198,9 @@ int main() {
 
                     // Delete the bullet
                     delete *bullet;  // Free memory
-                    bullet = bullets.erase(bullet);  // Remove from vector and continue the loop
-                    hit = true;  // Set flag to indicate bullet hit an enemy
-                    break;  // Exit the inner loop after first collision
+                    bullet = bullets.erase(bullet); 
+                    hit = true; 
+                    break;
                 }
             }
 
@@ -216,6 +225,8 @@ int main() {
             }
         }
         window.draw(timerText);
+        healthBar.Draw(window);
+
 
         for (auto& enemy : enemies)
             enemy->Update(playerPos, deltaTime);

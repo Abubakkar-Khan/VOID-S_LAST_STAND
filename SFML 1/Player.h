@@ -10,7 +10,7 @@ private:
 	Animation animation;
 
 	bool dead;
-	unsigned int health;
+	float health;
 
 	unsigned int row;
 	sf::Vector2f movement;
@@ -22,12 +22,14 @@ private:
 	Collider collider;
 
 public:
-	Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
+	Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float health);
 	void Update(float deltaTime, sf::Vector2i mousePos);
 	void Draw(sf::RenderWindow& window);
 	sf::Vector2f GetPosition() { return body.getPosition(); }
 	void setPosition(float x, float y) { body.setPosition(x, y); }
 	sf::Vector2f GetSize() { return body.getSize(); }
+	float GetHealth() const { return health; }
+	
 	bool isDead();
 	void setDead(bool die);
 
