@@ -23,6 +23,6 @@ public:
     void Draw(sf::RenderWindow& window);
 
     bool isDead();
-    void setDead(bool d);
+    void setDead(bool die);
     Collider& GetCollider() { return collider; }
 };

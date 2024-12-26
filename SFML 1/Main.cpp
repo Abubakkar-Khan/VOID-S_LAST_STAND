@@ -1,6 +1,8 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <cmath>  
+#include <cstdlib>  
+#include <ctime>  
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
@@ -8,15 +10,17 @@
 using namespace std;
 
 static const float VIEW_HEIGHT = 500;
+static const float SPAWN_INTERVAL = 3.0f;
 
 static void ResizeView(const sf::RenderWindow& window, sf::View& view)
 {
-
     float aspectRatio = static_cast<float>(window.getSize().x) / static_cast<float>(window.getSize().y);
     view.setSize(VIEW_HEIGHT * aspectRatio, VIEW_HEIGHT);
 }
 
 int main() {
+    srand(static_cast<unsigned int>(time(0)));
+
     sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Resize);
     sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
 
@@ -43,7 +47,6 @@ int main() {
     sf::Clock clock;
 
 
-
     // Boundry Wall
     sf::FloatRect worldBounds(0, 0, window.getSize().x, window.getSize().y);
     sf::RectangleShape boundary(sf::Vector2f(worldBounds.width - 2, worldBounds.height));
@@ -57,16 +60,8 @@ int main() {
     vector<Bullet*> bullets;
     vector<Enemy*> enemies;
 
-    int n = 5;
-    int i = 0;
+    float spawnTimer = 0.0f;
 
-    while (i < n)  // Use a loop to add enemies
-    {
-        enemies.push_back(new Enemy(nullptr, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(200.0f * n, 400.0f)));
-        i++;
-    }
-
-    
     // Game loop
     while (window.isOpen()) {
         deltaTime = clock.restart().asSeconds(); // Use seconds
@@ -86,17 +81,15 @@ int main() {
                 break;
             }
         }
+
         sf::Vector2i mousePos = sf::Mouse::getPosition(window); 
         sf::Vector2f worldMousePos = window.mapPixelToCoords(mousePos, view);
 
         sf::Vector2i worldMousePosInt(static_cast<int>(worldMousePos.x), static_cast<int>(worldMousePos.y));
 
-
         player.Update(deltaTime, worldMousePosInt);
         sf::Vector2f playerPos = player.GetPosition();
 
-        
-        
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
@@ -106,27 +99,26 @@ int main() {
         for (auto& enemy : enemies)
             enemy->GetCollider().CheckCollision(player.GetCollider(), 0.0f);
 
-        //for (auto& bullet : bullets) {
-        //    if (enemies.back()->GetCollider().CheckCollision(bullet->GetCollider(), 0.0f)) {
-        //        // Bullet hits enemy1, e.g., reduce health or destroy enemy
-        //        std::cout << "Bullet hit Enemy 1!" << std::endl;
-        //        delete bullet;
-        //        bullet = nullptr;
-        //    }
-            //if (enemies.back()->.GetCollider().CheckCollision(bullet->GetCollider(), 0.0f)) {
-            //    // Bullet hits enemy2, e.g., reduce health or destroy enemy
-            //    std::cout << "Bullet hit Enemy 2!" << std::endl;
-            //    delete bullet;
-            //    bullet = nullptr;
-            //}
-        //}
+
+        // Spawn new enemies after the interval
+        spawnTimer += deltaTime;
+        if (spawnTimer >= SPAWN_INTERVAL)
+        {
+            spawnTimer = 0.0f;
+
+            float spawnX = (rand() % 2 == 0) ? -50.0f : window.getSize().x + 50.0f;
+            float spawnY = (rand() % 2 == 0) ? -50.0f : window.getSize().y + 50.0f;
+
+            spawnX += rand() % 100 - 50; // -50 to 49 random 
+            spawnY += rand() % 100 - 50; 
+            
+            enemies.push_back(new Enemy(nullptr, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(spawnX, spawnY) ) );
+        }
+
 
         view.setCenter(player.GetPosition());
 
         
-
-
-
 
         // Player clamping (keep player inside world bounds)
         sf::Vector2f playerSize = player.GetSize();
@@ -146,19 +138,9 @@ int main() {
         // Check Enemies-Enemies Collisions
         for (size_t i = 0; i < enemies.size(); ++i) {
             for (size_t j = i + 1; j < enemies.size(); ++j) {
-                if (enemies[i]->GetCollider().CheckCollision(enemies[j]->GetCollider(), 0.0f)) {
+                enemies[i]->GetCollider().CheckCollision(enemies[j]->GetCollider(), 0.0f)   ;
                     // collision
-                }
-            }
-        }
-
-        for (auto bullet = bullets.begin(); bullet != bullets.end();) {
-            if ((*bullet)->isDead()) {
-                delete* bullet;  // Delete the bullet
-                bullet = bullets.erase(bullet);  // Remove from vector and continue
-            }
-            else {
-                ++bullet;
+                
             }
         }
 
@@ -177,6 +159,7 @@ int main() {
                 if ((*bullet)->GetCollider().CheckCollision(enemy->GetCollider(), 2.5f)) {
                     cout << "Bullet hit enemy!" <<  endl;
 
+
                     // Delete the bullet
                     delete *bullet;  // Free memory
                     bullet = bullets.erase(bullet);  // Remove from vector and continue the loop
@@ -191,7 +174,7 @@ int main() {
                 (*bullet)->Draw(window);  // Draw the bullet
                 ++bullet;  // Move to next bullet
             }
-}
+        }
 
 
         for (auto& enemy : enemies)

@@ -52,7 +52,7 @@ bool Bullet::isDead()
     return dead;  
 }
 
-void Bullet::setDead(bool d)
+void Bullet::setDead(bool die)
 {
-    dead = d;
+    dead = die;
 }
