@@ -9,10 +9,10 @@ private:
 	Collider collider;
 
 	bool dead;
-	int health;
+	float health;
 
 public:
-	Enemy(sf::Texture* texture, sf::Vector2f size, sf::Vector2f position);
+	Enemy(sf::Texture* texture, sf::Vector2f size, sf::Vector2f position, float health);
 	 
 	void Draw(sf::RenderWindow& window);
 	

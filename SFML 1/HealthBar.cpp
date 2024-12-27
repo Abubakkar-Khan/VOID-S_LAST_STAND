@@ -27,3 +27,11 @@ void HealthBar::Draw(sf::RenderWindow& window) {
 	window.draw(m_background);  
 	window.draw(m_health);      
 }
+
+void HealthBar::setPosition(sf::Vector2f position)
+{
+	m_position = position;
+	m_background.setPosition(m_position);  // Update the background position
+	m_health.setPosition(m_position);      // Update the health foreground position
+}
+

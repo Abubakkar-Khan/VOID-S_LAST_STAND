@@ -7,8 +7,8 @@ Bullet::Bullet(sf::Vector2f position, sf::Vector2i target, float speed)
 {
     dead = false;
 
-    shape.setSize(sf::Vector2f(1.f, 1.f)); // Set bullet size
-    shape.setFillColor(sf::Color::Cyan); // Bullet color
+    shape.setSize(sf::Vector2f(5.f, 5.f)); // Set bullet size
+    shape.setFillColor(sf::Color::Yellow); // Bullet color
 
     shape.setOrigin(shape.getSize().x / 2.f, shape.getSize().y / 2.f);  // Center the origin of the bullet
     shape.setPosition(position); // Start position

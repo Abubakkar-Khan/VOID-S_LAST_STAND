@@ -2,15 +2,15 @@
 #include <cmath>
 #include <iostream>
 
-Enemy::Enemy(sf::Texture* texture, sf::Vector2f size, sf::Vector2f position) : collider(body)
+Enemy::Enemy(sf::Texture* texture, sf::Vector2f size, sf::Vector2f position, float health) : collider(body), health(health)
 {
     dead = false;
-    health = 10;
 
     body.setSize(size);
     body.setOrigin(size / 2.0f);  // Set origin to the center
     body.setTexture(texture);
     body.setPosition(position);
+    body.setFillColor(sf::Color(250, 50, 50));
 }
 
 void Enemy::Draw(sf::RenderWindow& window)

@@ -1,4 +1,5 @@
 ﻿#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 #include <iostream>
 #include <cmath>  
 #include <cstdlib>  
@@ -11,9 +12,11 @@
 using namespace std;
 
 const float MAX_PLAYER_HEALTH = 100.0f;
+const float ENEMY_HEALTH = 2.0f;
 
-static const float VIEW_HEIGHT = 500;
-static const float SPAWN_INTERVAL = 2.0f;
+static const float VIEW_HEIGHT = 512;
+float SPAWN_INTERVAL = 2.0f;
+float BULLET_INTERVAL = 0.2f;
 
 static void ResizeView(const sf::RenderWindow& window, sf::View& view)
 {
@@ -22,9 +25,22 @@ static void ResizeView(const sf::RenderWindow& window, sf::View& view)
 }
 
 int main() {
+    sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Resize);
+    sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
+
+    sf::CircleShape circle(2);
+    circle.setFillColor(sf::Color::Transparent);
+    circle.setOutlineColor(sf::Color::White);
+    circle.setOutlineThickness(1.0);
+    
+    circle.setOrigin(1, 1);
+
+    window.setMouseCursorVisible(false);
+
     srand(static_cast<unsigned int>(time(0)));
 
     sf::Text timerText;
+    sf::Text scoreText;
     sf::Font font;
     if (!font.loadFromFile("ARCADE.ttf")) 
     {  // Make sure you have a valid font path
@@ -35,10 +51,25 @@ int main() {
     timerText.setFont(font);
     timerText.setCharacterSize(30);
     timerText.setFillColor(sf::Color::White);
+    
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(30);
+    scoreText.setFillColor(sf::Color::White);
 
-
-    sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Resize);
-    sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
+    sf::Text healthLabel;
+    healthLabel.setFont(font);
+    healthLabel.setCharacterSize(20);
+    healthLabel.setFillColor(sf::Color::White);
+    healthLabel.setString("Health");
+    
+    sf::Text scoreLabel;
+    scoreLabel.setFont(font);
+    scoreLabel.setCharacterSize(20);
+    scoreLabel.setFillColor(sf::Color::White);
+    scoreLabel.setString("Score");
+    scoreLabel.setOrigin(scoreLabel.getLocalBounds().width / 2, scoreLabel.getLocalBounds().height / 2);
+    
+    int score = 0;
 
     ResizeView(window, view);
 
@@ -62,8 +93,8 @@ int main() {
     // Boundry Wall
     sf::FloatRect worldBounds(0, 0, window.getSize().x, window.getSize().y);
     sf::RectangleShape boundary(sf::Vector2f(worldBounds.width - 2, worldBounds.height));
-    boundary.setPosition(worldBounds.left - 5, worldBounds.top);
-    boundary.setOutlineColor(sf::Color::White);
+    boundary.setPosition(worldBounds.left - 5, worldBounds.top - 5);
+    boundary.setOutlineColor(sf::Color(100, 200, 200));
     boundary.setOutlineThickness(2);
     boundary.setFillColor(sf::Color::Transparent);
 
@@ -75,6 +106,7 @@ int main() {
     vector<Enemy*> enemies;
 
     float spawnTimer = 0.0f;
+    float bulletTimer = 0.0f;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +117,11 @@ int main() {
         deltaTime = clock.restart().asSeconds(); // Use seconds
         static float elapsedTime = 0;
         elapsedTime += deltaTime;
-
+        
+        if (SPAWN_INTERVAL > 1.0f)
+            SPAWN_INTERVAL -= deltaTime * deltaTime;
+        else
+            SPAWN_INTERVAL = 1.0f;
 
         int minutes = static_cast<int>(elapsedTime) / 60;
         int seconds = static_cast<int>(elapsedTime) % 60;
@@ -94,6 +130,9 @@ int main() {
             + (seconds < 10 ? "0" : "") + to_string(seconds);
 
         timerText.setString(timeString);
+
+
+
 
         sf::Event evnt;
         while (window.pollEvent(evnt)) {
@@ -120,22 +159,6 @@ int main() {
         sf::Vector2f playerPos = player.GetPosition();
 
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
-            bullets.push_back(new Bullet (player.GetPosition(), worldMousePosInt, 500.0));
-        }
-
-        
-        for (auto& enemy : enemies) {
-            if(enemy->GetCollider().CheckCollision(player.GetCollider(), 10.0f))
-            {
-                player.setDead(true);
-            }
-        }
-        // update health
-        
-
-
         // Spawn new enemies after the interval
         spawnTimer += deltaTime;
         if (spawnTimer >= SPAWN_INTERVAL)
@@ -148,33 +171,60 @@ int main() {
             spawnX += rand() % 100 - 50; // -50 to 49 random 
             spawnY += rand() % 100 - 50; 
             
-            enemies.push_back(new Enemy(nullptr, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(spawnX, spawnY) ) );
+            enemies.push_back(new Enemy(nullptr, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH ));
         }
 
+        bulletTimer += deltaTime;
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bulletTimer >= BULLET_INTERVAL)
+        {
+            bullets.push_back(new Bullet (player.GetPosition(), worldMousePosInt, 800.0));
+            bulletTimer = 0;
+        }
 
+        
+        for (auto& enemy : enemies) {
+            if(enemy->GetCollider().CheckCollision(player.GetCollider(), 0.0f))
+            {
+                player.setDead(true);
+            }
+        }
+        
         view.setCenter(player.GetPosition());
         
-        // UI / UX 
-        timerText.setPosition(player.GetPosition().x - view.getSize().x / 100, player.GetPosition().y - view.getSize().y / 2.2);
-        HealthBar healthBar(MAX_PLAYER_HEALTH, sf::Vector2f(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.3), sf::Vector2f(150.0f, 5.0f));
+        // UI / UX
+        timerText.setPosition(player.GetPosition().x , player.GetPosition().y - view.getSize().y / 2.2); 
+        timerText.setOrigin(timerText.getLocalBounds().width / 2, timerText.getLocalBounds().height / 2);  // Set origin to the center of the text
 
+        HealthBar healthBar(MAX_PLAYER_HEALTH, sf::Vector2f(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.3), sf::Vector2f(150.0f, 5.0f));
+        scoreText.setPosition(player.GetPosition().x + view.getSize().x / 3, player.GetPosition().y - view.getSize().y / 2.2);
+        healthLabel.setPosition(player.GetPosition().x - view.getSize().x / 2.6, player.GetPosition().y - view.getSize().y / 2.1f);
+        scoreLabel.setPosition(player.GetPosition().x + view.getSize().x / 2.85, player.GetPosition().y - view.getSize().y / 2.1f);
+
+        timerText.setOrigin(timerText.getLocalBounds().width / 2, timerText.getLocalBounds().height / 2);
+        scoreText.setOrigin(scoreText.getLocalBounds().width / 2, scoreText.getLocalBounds().height / 2);
+        healthLabel.setOrigin(healthLabel.getLocalBounds().width / 2, healthLabel.getLocalBounds().height / 2);
+        
         healthBar.Update(player.GetHealth());
         
         // Player clamping (keep player inside world bounds)
         sf::Vector2f playerSize = player.GetSize();
 
+        // Clamp the player's X position
         if (playerPos.x < worldBounds.left)
-            player.setPosition(worldBounds.left, playerPos.y);
+            playerPos.x = worldBounds.left;
 
-        if (playerPos.x + playerSize.x > worldBounds.left + worldBounds.width)
-            player.setPosition(worldBounds.left + worldBounds.width - playerSize.x, playerPos.y);
+        if (playerPos.x + playerSize.x > worldBounds.width)
+            playerPos.x = worldBounds.width - playerSize.x;
 
+        // Clamp the player's Y position
         if (playerPos.y < worldBounds.top)
-            player.setPosition(playerPos.x, worldBounds.top);
+            playerPos.y = worldBounds.top;
 
-        if (playerPos.y + playerSize.y > worldBounds.top + worldBounds.height)
-            player.setPosition(playerPos.x, worldBounds.top + worldBounds.height - playerSize.y);
+        if (playerPos.y + playerSize.y >  worldBounds.height)
+            playerPos.y = worldBounds.height - playerSize.y;
 
+        // Update the player's position only once after clamping
+        player.setPosition(playerPos.x, playerPos.y);
 
         // Check Enemies-Enemies Collisions
         for (size_t i = 0; i < enemies.size(); ++i) 
@@ -195,6 +245,9 @@ int main() {
             for (auto& enemy : enemies) {
                 if ((*bullet)->GetCollider().CheckCollision(enemy->GetCollider(), 2.5f)) {
                     enemy->setDead(true);
+                    
+                    // Increment Score
+                    score++;
 
                     // Delete the bullet
                     delete *bullet;  // Free memory
@@ -203,6 +256,8 @@ int main() {
                     break;
                 }
             }
+
+            circle.setPosition(worldMousePosInt.x, worldMousePosInt.y);
 
             for (auto enemy = enemies.begin(); enemy != enemies.end(); )
             {
@@ -224,8 +279,18 @@ int main() {
                 ++bullet;  // Move to next bullet
             }
         }
+
+        string scoreString = ( score < 10 ?  "0" : to_string(score));
+        scoreText.setString(scoreString);
+
+
         window.draw(timerText);
+        window.draw(scoreText);
+        window.draw(healthLabel);
+        window.draw(scoreLabel);
         healthBar.Draw(window);
+
+        window.draw(circle);
 
 
         for (auto& enemy : enemies)
