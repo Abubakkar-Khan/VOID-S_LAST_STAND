@@ -6,8 +6,8 @@
 class Bullet
 {
 private:
-    float lifetime = 3.0f;  // Bullet lifetime in seconds
-    float age = 0.0f;
+    float lifetime;
+    float age;
     bool dead;
 
     Collider collider;
@@ -18,11 +18,13 @@ public:
     sf::Vector2f velocity;
     float speed;
 
-    Bullet(sf::Vector2f position, sf::Vector2i target, float speed); // Constructor
-    void update(float deltaTime); // Update bullet position
+    Bullet(sf::Texture* texture, sf::Vector2f position, sf::Vector2i target, float speed, float life, float size); // Constructor
+    void update(float deltaTime);
     void Draw(sf::RenderWindow& window);
 
     bool isDead();
     void setDead(bool die);
     Collider& GetCollider() { return collider; }
 };
+
+

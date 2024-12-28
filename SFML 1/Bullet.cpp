@@ -2,16 +2,16 @@
 
 
 
-Bullet::Bullet(sf::Vector2f position, sf::Vector2i target, float speed) 
-    : speed(speed), collider(shape)
+Bullet::Bullet(sf::Texture* texture, sf::Vector2f position, sf::Vector2i target, float speed, float life, float size)
+    : speed(speed), collider(shape), age(0.0f), lifetime(life)
 {
     dead = false;
 
-    shape.setSize(sf::Vector2f(5.f, 5.f)); // Set bullet size
-    shape.setFillColor(sf::Color::Yellow); // Bullet color
+    shape.setSize(sf::Vector2f(size, size)); // Set bullet size
+    //shape.setFillColor(sf::Color::Yellow); // Bullet color
 
-    shape.setOrigin(shape.getSize().x / 2.f, shape.getSize().y / 2.f);  // Center the origin of the bullet
-    shape.setPosition(position); // Start position
+    shape.setOrigin(shape.getSize().x / 2.f, shape.getSize().y / 2.f);
+    shape.setPosition(position);
 
     // Calculate direction vector from the bullet's position to the target (mouse position)
     sf::Vector2f direction(target.x - position.x, target.y - position.y);
@@ -26,7 +26,7 @@ Bullet::Bullet(sf::Vector2f position, sf::Vector2i target, float speed)
     float angle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159f;  // atan2 returns the angle in radians
 
     shape.setRotation(angle); // Set the bullet's rotation based on the angle
-
+    shape.setTexture(texture);
     velocity = direction * speed; // Set velocity based on the normalized direction and speed
 }
 
@@ -34,6 +34,7 @@ void Bullet::update(float deltaTime)
 {
     // Move the bullet based on its velocity
     shape.move(velocity * deltaTime);  // Bullet speed adjusted by deltaTime
+    age += deltaTime;
 }
 
 void Bullet::Draw(sf::RenderWindow& window)
@@ -43,13 +44,11 @@ void Bullet::Draw(sf::RenderWindow& window)
 
 bool Bullet::isDead()
 {
-    // Bullet is dead if lifetime exceeded or if it's off-screen
-    // Check if the bullet's age has exceeded its lifetime
     if (age >= lifetime)
-        dead =  true;
+        dead = true;
     else
-        dead =  false;  // Bullet is still alive
-    return dead;  
+        dead = false;  // Bullet is still alive
+    return dead;
 }
 
 void Bullet::setDead(bool die)

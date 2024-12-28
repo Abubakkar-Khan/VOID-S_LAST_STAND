@@ -9,7 +9,7 @@ private:
 private:
 	float totalTime;
 	float switchTime;
-	
+
 
 public:
 	sf::IntRect uvRect;

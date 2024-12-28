@@ -53,11 +53,15 @@ void highlightText(sf::Text& text, sf::Vector2f worldMousePos, int defaultSize, 
 
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Resize);
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8;
+
+
+    sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Fullscreen);
     sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
 
     sf::Texture cursorTexture;
-    if (!cursorTexture.loadFromFile("textures/11.png")) {
+    if (!cursorTexture.loadFromFile("textures/aim.png")) {
         cerr << "Error loading cursor texture!" << endl;
         return -1;
     }
@@ -66,6 +70,13 @@ int main() {
     sf::Sprite cursorSprite(cursorTexture);
     cursorSprite.setOrigin(cursorTexture.getSize().x / 2.0f, cursorTexture.getSize().y / 2.0f);
     cursorSprite.setScale(0.5f, 0.5f);
+
+    sf::Texture bulletTexture;
+    if (!bulletTexture.loadFromFile("textures/01.png"))
+    {
+        cerr << "Error loading cursor texture!" << endl;
+        return -1;
+    }
 
     srand(static_cast<unsigned int>(time(0)));
 
@@ -146,8 +157,22 @@ int main() {
     menuText.setOrigin(menuText.getLocalBounds().width / 2, menuText.getLocalBounds().height / 2);
 
 
+    sf::Texture backgroundTexture;
+    if (!backgroundTexture.loadFromFile("textures/purple.png")) {
+        cerr << "Error loading background texture!" << endl;
+        return -1;
+    }
+    sf::Sprite backgroundSprite(backgroundTexture);
 
+    backgroundSprite.setOrigin(backgroundSprite.getLocalBounds().width / 2, backgroundSprite.getLocalBounds().height / 2);
 
+    backgroundSprite.setScale(
+        WORLD_SIZE.x / backgroundTexture.getSize().y * 2,
+        WORLD_SIZE.y / backgroundTexture.getSize().y * 2
+    );
+    backgroundSprite.setPosition(window.getSize().x / 2,
+        window.getSize().y / 2);
+    backgroundSprite.setColor(sf::Color(255, 255, 255, 160));
 
 
 
@@ -274,6 +299,8 @@ int main() {
 
         if (gameState == GameState::MainMenu) {
             // Highlight the texts
+
+
             highlightText(playText, worldMousePos, 40, 45);
             highlightText(exitText, worldMousePos, 40, 45);
 
@@ -310,6 +337,8 @@ int main() {
 
             // Draw the menu
             window.clear();
+            window.draw(backgroundSprite);
+
             window.draw(titleText);
             window.draw(playText);
             window.draw(exitText);
@@ -322,7 +351,6 @@ int main() {
         else if (gameState == GameState::Playing) {
             // Game logic and rendering
             window.clear();
-
 
             window.setMouseCursorVisible(false);
 
@@ -386,11 +414,11 @@ int main() {
             bulletTimer += deltaTime;
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bulletTimer >= BULLET_INTERVAL)
             {
-                bullets.push_back(new Bullet(player.GetPosition(), worldMousePosInt, 800.0));
+                bullets.push_back(new Bullet(&bulletTexture, player.GetPosition(), worldMousePosInt, 800.0, 3.0f, 20.0));
                 bulletSound.play();
                 bulletTimer = 0;
             }
-
+            //bullets.push_back(new Bullet(nullptr,  player.GetPosition(), worldMousePosInt, 0.2, 0.2f));
 
             for (auto& enemy : enemies) {
                 if (enemy->GetCollider().CheckCollision(player.GetCollider(), 0.0f))
@@ -459,10 +487,11 @@ int main() {
 
             window.clear();
 
+            window.draw(backgroundSprite);
             window.draw(boundary);
 
+
             // Draw the player
-            player.Draw(window);
 
             for (auto bullet = bullets.begin(); bullet != bullets.end();) {
                 bool hit = false;
@@ -471,43 +500,51 @@ int main() {
                 for (auto& enemy : enemies) {
                     if ((*bullet)->GetCollider().CheckCollision(enemy->GetCollider(), 2.5f)) {
                         enemy->setDead(true);
+                        (*bullet)->setDead(true);
                         score++;
-                        cout << "Score :" << score << endl;
-                        // Increment Score
 
                         // Delete the bullet
-                        delete* bullet;  // Free memory
-                        bullet = bullets.erase(bullet);
+                        if ((*bullet)->isDead()) {
+                            delete* bullet;  // Free memory
+                        }
+                        bullet = bullets.erase(bullet);  // Erase the bullet from the vector
                         hit = true;
                         break;
                     }
                 }
 
+                // Draw the cursor sprite for visual feedback
                 window.draw(cursorSprite);
 
-                for (auto enemy = enemies.begin(); enemy != enemies.end(); )
-                {
-                    if ((*enemy)->isDead())
-                    {
-                        delete* enemy;
-                        enemySound.play();
-
-                        enemy = enemies.erase(enemy);
+                // Check and delete dead enemies
+                for (auto enemy = enemies.begin(); enemy != enemies.end();) {
+                    if ((*enemy)->isDead()) {
+                        delete* enemy;  // Delete the enemy
+                        enemySound.play();  // Play sound when an enemy dies
+                        enemy = enemies.erase(enemy);  // Erase the enemy from the vector
                     }
-                    else
-                    {
-                        enemy++;
+                    else {
+                        ++enemy;  // Move to the next enemy if not dead
                     }
                 }
 
                 // If the bullet wasn't hit by any enemy, just continue to the next bullet
                 if (!hit) {
-                    (*bullet)->update(deltaTime);  // Update the bullet
-                    (*bullet)->Draw(window);  // Draw the bullet
-                    ++bullet;  // Move to next bullet
+                    (*bullet)->update(deltaTime);
+
+                    if ((*bullet)->isDead()) {
+                        delete* bullet;
+                        bullet = bullets.erase(bullet);
+                    }
+                    else {
+                        (*bullet)->Draw(window);
+                        ++bullet;
+                    }
                 }
             }
 
+
+            player.Draw(window);
             string scoreString = to_string(score);
             scoreText.setString(scoreString);
 
@@ -571,15 +608,14 @@ int main() {
 
             // Draw the pause menu
             window.clear();
+            window.draw(backgroundSprite);
+
+
             window.draw(pauseText);
             window.draw(resumeText);
             window.draw(menuText);
             window.display();
         }
-
-
-
-
 
     }
 
