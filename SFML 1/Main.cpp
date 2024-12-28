@@ -312,7 +312,6 @@ int main() {
                 }
             }
 
-            window.draw(cursorSprite);
 
             for (auto enemy = enemies.begin(); enemy != enemies.end(); )
             {
@@ -354,6 +353,7 @@ int main() {
         window.draw(healthLabel);
         window.draw(scoreLabel);
         healthBar.Draw(window);
+        window.draw(cursorSprite);
 
         window.setView(view);
         window.display();
