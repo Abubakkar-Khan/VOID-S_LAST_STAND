@@ -96,7 +96,7 @@ int main() {
     bulletSound.setBuffer(bulletSoundBuffer);
 
     sf::SoundBuffer enemySoundBuffer;
-    if (!enemySoundBuffer.loadFromFile("Sounds/laser.wav"))
+    if (!enemySoundBuffer.loadFromFile("Sounds/explode.mp3"))
     {
         cerr << "Error loading bullet sound!" << endl;
         return -1;
@@ -341,11 +341,6 @@ int main() {
         scoreText.setString(scoreString);
 
 
-        window.draw(timerText);
-        window.draw(scoreText);
-        window.draw(healthLabel);
-        window.draw(scoreLabel);
-        healthBar.Draw(window);
 
 
         for (auto& enemy : enemies)
@@ -353,6 +348,12 @@ int main() {
 
         for (auto& enemy : enemies)
             enemy->Draw(window);
+
+        window.draw(timerText);
+        window.draw(scoreText);
+        window.draw(healthLabel);
+        window.draw(scoreLabel);
+        healthBar.Draw(window);
 
         window.setView(view);
         window.display();
