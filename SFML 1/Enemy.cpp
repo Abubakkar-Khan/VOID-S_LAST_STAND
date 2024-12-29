@@ -11,7 +11,7 @@ Enemy::Enemy(sf::Texture* texture, sf::Vector2u imageCount, float switchTime,
     body.setSize(size);
     body.setOrigin(size / 2.0f);  // Set origin to the center
     body.setPosition(position);
-    body.setFillColor(sf::Color(50, 250, 50));
+    body.setFillColor(sf::Color(150, 250, 150));
     body.setTexture(texture);
 }
 
@@ -31,6 +31,11 @@ void Enemy::Update(sf::Vector2f playerPos, float daltaTime)
         direction /= magnitude;  // Normalize the direction
     }
     animation.update(row, daltaTime);
+    
+    // Calculate the angle in radians and convert it to degrees
+    float angle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159f;  // atan2 returns the angle in radians
+
+    body.setRotation(angle + 90);
 
     // Move the enemy towards the player
     float speed = 100.f;  // Speed of the enemy

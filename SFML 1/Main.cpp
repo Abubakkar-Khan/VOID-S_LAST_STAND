@@ -18,7 +18,8 @@ const float ENEMY_HEALTH = 2.0f;
 enum class GameState {
     MainMenu,
     Playing,
-    Paused
+    Paused,
+    GameOver
 };
 GameState gameState = GameState::MainMenu;
 
@@ -56,7 +57,6 @@ int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
-
     sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Fullscreen);
     sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
 
@@ -66,17 +66,49 @@ int main() {
         return -1;
     }
 
-
     sf::Sprite cursorSprite(cursorTexture);
     cursorSprite.setOrigin(cursorTexture.getSize().x / 2.0f, cursorTexture.getSize().y / 2.0f);
     cursorSprite.setScale(0.5f, 0.5f);
 
     sf::Texture bulletTexture;
-    if (!bulletTexture.loadFromFile("textures/01.png"))
+    if (!bulletTexture.loadFromFile("textures/11.png"))
     {
         cerr << "Error loading cursor texture!" << endl;
         return -1;
     }
+
+    sf::Texture blastTexture;
+    if (!blastTexture.loadFromFile("textures/smoke.png")) {
+        cerr << "Error loading blast Texture!" << endl;
+        return -1;
+    }
+    sf::Sprite blastSprite(blastTexture);
+    Animation blastAnimation(&blastTexture, sf::Vector2u(11, 15), 0.2f);
+    sf::RectangleShape blastBody;
+    sf::Vector2f blastSize(10.0f, 10.0f);
+    blastBody.setSize(blastSize);
+    blastBody.setOrigin(blastSize / 2.0f);  // Set origin to the center
+    blastBody.setFillColor(sf::Color(50, 250, 50));
+    blastBody.setTexture(&blastTexture);
+
+
+
+    sf::Texture backgroundTexture;
+    if (!backgroundTexture.loadFromFile("textures/purple.png")) {
+        cerr << "Error loading background texture!" << endl;
+        return -1;
+    }
+    sf::Sprite backgroundSprite(backgroundTexture);
+    backgroundSprite.setOrigin(backgroundSprite.getLocalBounds().width / 2, backgroundSprite.getLocalBounds().height / 2);
+
+    backgroundSprite.setScale(
+        WORLD_SIZE.x / backgroundTexture.getSize().y * 2,
+        WORLD_SIZE.y / backgroundTexture.getSize().y * 2
+    );
+    backgroundSprite.setPosition(window.getSize().x / 2,
+        window.getSize().y / 2);
+    backgroundSprite.setColor(sf::Color(255, 155, 155, 160));
+
 
     srand(static_cast<unsigned int>(time(0)));
 
@@ -119,6 +151,15 @@ int main() {
     playText.setOrigin(playText.getLocalBounds().width / 2, playText.getLocalBounds().height / 2);
 
 
+    sf::Text GameOverText;
+    GameOverText.setFont(font);
+    GameOverText.setCharacterSize(60);
+    GameOverText.setFillColor(sf::Color::White);
+    GameOverText.setString("GameOver");
+    GameOverText.setOrigin(GameOverText.getLocalBounds().width / 2, GameOverText.getLocalBounds().height / 2);
+
+    bool GameOver = false;
+
 
 
     sf::Text titleText;
@@ -155,25 +196,6 @@ int main() {
     menuText.setFillColor(sf::Color::White);
     menuText.setString("Main Menu");
     menuText.setOrigin(menuText.getLocalBounds().width / 2, menuText.getLocalBounds().height / 2);
-
-
-    sf::Texture backgroundTexture;
-    if (!backgroundTexture.loadFromFile("textures/purple.png")) {
-        cerr << "Error loading background texture!" << endl;
-        return -1;
-    }
-    sf::Sprite backgroundSprite(backgroundTexture);
-
-    backgroundSprite.setOrigin(backgroundSprite.getLocalBounds().width / 2, backgroundSprite.getLocalBounds().height / 2);
-
-    backgroundSprite.setScale(
-        WORLD_SIZE.x / backgroundTexture.getSize().y * 2,
-        WORLD_SIZE.y / backgroundTexture.getSize().y * 2
-    );
-    backgroundSprite.setPosition(window.getSize().x / 2,
-        window.getSize().y / 2);
-    backgroundSprite.setColor(sf::Color(255, 155, 155, 120));
-
 
 
     int score = 0;
@@ -228,12 +250,19 @@ int main() {
     }
 
     sf::Texture enemyTexture;
-    if (!enemyTexture.loadFromFile("textures/neye.png")) {
+    if (!enemyTexture.loadFromFile("textures/ship.png")) {
         cerr << "Error loading enemy texture!" << endl;
         return -1;
     }
 
-    Player player(&playerTexture, sf::Vector2u(1, 1), 0.20f, MAX_PLAYER_HEALTH);
+    sf::Texture enemyTexture2;
+    if (!enemyTexture2.loadFromFile("textures/neye.png")) {
+        cerr << "Error loading enemy2 texture!" << endl;
+        return -1;
+    }
+    bool e = false;
+
+    Player player(&playerTexture, sf::Vector2u(1, 1), 2.0f, MAX_PLAYER_HEALTH);
 
     float deltaTime = 0.0f;
     sf::Clock clock;
@@ -361,12 +390,6 @@ int main() {
 
 
 
-
-
-
-
-
-
             static float elapsedTime = 0;
             elapsedTime += deltaTime;
 
@@ -408,7 +431,17 @@ int main() {
                 spawnX += rand() % 100 - 50; // -50 to 49 random 
                 spawnY += rand() % 100 - 50;
 
-                enemies.push_back(new Enemy(&enemyTexture,sf::Vector2u(10, 1), 0.02, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
+                if (e)
+                {
+                    enemies.push_back(new Enemy(&enemyTexture, sf::Vector2u(5, 2), 0.02, sf::Vector2f(30.0f, 40.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
+                    e = false;
+                }
+                else
+                {
+                    enemies.push_back(new Enemy(&enemyTexture2, sf::Vector2u(10, 1), 0.02, sf::Vector2f(40.0f, 40.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
+                    e = true;
+                }
+
             }
 
             bulletTimer += deltaTime;
@@ -500,11 +533,24 @@ int main() {
                 for (auto& enemy : enemies) {
                     if ((*bullet)->GetCollider().CheckCollision(enemy->GetCollider(), 2.5f)) {
                         enemy->setDead(true);
+
                         (*bullet)->setDead(true);
                         score++;
 
                         // Delete the bullet
                         if ((*bullet)->isDead()) {
+
+                            //blastBody.setPosition(enemy->getPosition());
+
+
+                            //// Update the animation to get the first frame (row 0, for example)
+                            //blastAnimation.update(0, deltaTime);
+                            //// Set the texture rectangle of the sprite
+                            //blastBody.setTextureRect(blastAnimation.uvRect);
+
+
+                            
+
                             delete* bullet;  // Free memory
                         }
                         bullet = bullets.erase(bullet);  // Erase the bullet from the vector
@@ -513,11 +559,14 @@ int main() {
                     }
                 }
 
+                // Draw the cursor sprite for visual feedback
 
                 // Check and delete dead enemies
                 for (auto enemy = enemies.begin(); enemy != enemies.end();) {
                     if ((*enemy)->isDead()) {
+                        blastSprite.setPosition((*enemy)->getPosition());
                         delete* enemy;  // Delete the enemy
+                        
                         enemySound.play();  // Play sound when an enemy dies
                         enemy = enemies.erase(enemy);  // Erase the enemy from the vector
                     }
@@ -545,7 +594,6 @@ int main() {
             player.Draw(window);
             string scoreString = to_string(score);
             scoreText.setString(scoreString);
-            window.draw(cursorSprite);
 
 
 
@@ -553,17 +601,28 @@ int main() {
             for (auto& enemy : enemies)
                 enemy->Update(playerPos, deltaTime);
 
+            
+
+
             for (auto& enemy : enemies)
                 enemy->Draw(window);
+
+            //window.draw(blastSprite);
 
             window.draw(timerText);
             window.draw(scoreText);
             window.draw(healthLabel);
             window.draw(scoreLabel);
             healthBar.Draw(window);
+            window.draw(cursorSprite);
 
             window.setView(view);
             window.display();
+
+            if (player.isDead())
+            {
+                gameState = GameState::GameOver;
+            }
 
 
 
@@ -609,13 +668,58 @@ int main() {
             window.clear();
             window.draw(backgroundSprite);
 
-
+            
             window.draw(pauseText);
             window.draw(resumeText);
             window.draw(menuText);
             window.display();
         }
 
+
+        else if (gameState == GameState::GameOver) {
+            // Handle Game Over state
+
+            //highlightText(exitText, worldMousePos, 40, 45);
+
+            // Center the view for menu
+            view.setCenter(sf::Vector2f(0.0f, 0.0f));
+            window.setView(view);
+
+            // Center the title text
+            sf::FloatRect gameOverBounds = GameOverText.getLocalBounds();
+            GameOverText.setOrigin(gameOverBounds.width / 2.0f, gameOverBounds.height / 2.0f);
+            GameOverText.setPosition(view.getCenter().x, view.getCenter().y - 100.0f);
+
+            sf::FloatRect exitBounds = exitText.getLocalBounds();
+            exitText.setOrigin(exitBounds.width / 2.0f, exitBounds.height / 2.0f);
+            exitText.setPosition(view.getCenter().x, view.getCenter().y + 50.0f);
+
+            // Handle mouse click
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                if (exitText.getGlobalBounds().contains(worldMousePos)) {
+                    transitionSound.play();
+                    window.close();
+                }
+            }
+
+            window.clear();
+            window.draw(backgroundSprite);
+
+
+
+            window.draw(GameOverText);
+
+            // Optionally, add logic to restart the game or exit
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+                // Restart the game
+                gameState = GameState::MainMenu; // or reset game variables as needed
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                window.close(); // Exit the game
+            }
+
+            window.display();
+        }
     }
 
     return 0;

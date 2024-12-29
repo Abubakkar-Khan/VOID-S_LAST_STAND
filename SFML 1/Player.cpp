@@ -6,7 +6,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 {
 	row = 2;
 
-    acceleration = 0.2f;  // How fast the body accelerates
+    acceleration = 20.0f;  // How fast the body accelerates
     deceleration = 0.98f;  // How fast the body slows down when no key is pressed
     maxSpeed = 8.0f;  // Maximum speed of the body
 
@@ -22,13 +22,13 @@ void Player::Update(float deltaTime, sf::Vector2i mousePos)
 {
     // Movement based on key presses
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-        movement.y -= acceleration;
+        movement.y -= acceleration * deltaTime;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-        movement.x -= acceleration;
+        movement.x -= acceleration * deltaTime;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-        movement.y += acceleration;
+        movement.y += acceleration * deltaTime;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-        movement.x += acceleration;
+        movement.x += acceleration * deltaTime;
 
     // Apply deceleration if no key is pressed (smooth deceleration)
     if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))

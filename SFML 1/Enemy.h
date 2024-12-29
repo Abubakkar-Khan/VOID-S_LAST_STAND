@@ -23,7 +23,25 @@ public:
 
 	Collider& GetCollider() { return collider; }
 
+	sf::Vector2f getPosition() { return body.getPosition(); }
+
 	bool isDead() const;
 	void setDead(bool die);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
