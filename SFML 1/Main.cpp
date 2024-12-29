@@ -232,12 +232,22 @@ int main() {
     sf::SoundBuffer transitionSoundBuffer;
     if (!transitionSoundBuffer.loadFromFile("Sounds/Transition_3.wav"))
     {
-        cerr << "Error loading hover sound!" << endl;
+        cerr << "Error loading transition sound!" << endl;
         return -1;
     }
     sf::Sound transitionSound;
     transitionSound.setBuffer(transitionSoundBuffer);
 
+    sf::SoundBuffer gameOverBuffer;
+    if (!gameOverBuffer.loadFromFile("Sounds/gameover.mp3"))
+    {
+        cerr << "Error loading gameover sound!" << endl;
+        return -1;
+    }
+    sf::Sound gameOverSound;
+    gameOverSound.setBuffer(gameOverBuffer);
+
+    bool gameOverS = false;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -381,6 +391,7 @@ int main() {
             // Game logic and rendering
             window.clear();
 
+            gameOverS = false;
             window.setMouseCursorVisible(false);
 
 
@@ -682,6 +693,12 @@ int main() {
 
             //highlightText(exitText, worldMousePos, 40, 45);
 
+            if (!gameOverS)
+            {
+                gameOverSound.play();
+                gameOverS = true;
+            }
+
             // Center the view for menu
             view.setCenter(sf::Vector2f(0.0f, 0.0f));
             window.setView(view);
@@ -702,6 +719,7 @@ int main() {
                     window.close();
                 }
             }
+
 
             window.clear();
             window.draw(backgroundSprite);
