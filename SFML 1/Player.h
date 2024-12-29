@@ -27,6 +27,8 @@ public:
 	void Draw(sf::RenderWindow& window);
 	sf::Vector2f GetPosition() { return body.getPosition(); }
 	void setPosition(float x, float y) { body.setPosition(x, y); }
+	void setHealth(float nHealth);
+
 	sf::Vector2f GetSize() { return body.getSize(); }
 	float GetHealth() const { return health; }
 	

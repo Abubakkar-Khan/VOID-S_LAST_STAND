@@ -68,6 +68,11 @@ void Player::Draw(sf::RenderWindow& window)
     window.draw(body);
 }
 
+void Player::setHealth(float nHealth)
+{
+    health = nHealth;
+}
+
 bool Player::isDead() const
 {
     return dead;

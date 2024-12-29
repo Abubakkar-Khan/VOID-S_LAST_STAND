@@ -52,7 +52,6 @@ void highlightText(sf::Text& text, sf::Vector2f worldMousePos, int defaultSize, 
     }
 }
 
-
 int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
@@ -174,7 +173,6 @@ int main() {
     exitText.setCharacterSize(40);
     exitText.setFillColor(sf::Color::White);
     exitText.setString("Exit");
-    exitText.setPosition(window.getSize().x / 2 - 50, window.getSize().y / 2 + 100);
 
     sf::Text pauseText;
     pauseText.setFont(font);
@@ -188,14 +186,12 @@ int main() {
     resumeText.setCharacterSize(40);
     resumeText.setFillColor(sf::Color::White);
     resumeText.setString("Resume");
-    resumeText.setOrigin(resumeText.getLocalBounds().width / 2, resumeText.getLocalBounds().height / 2);
 
     sf::Text menuText;
     menuText.setFont(font);
     menuText.setCharacterSize(40);
     menuText.setFillColor(sf::Color::White);
     menuText.setString("Main Menu");
-    menuText.setOrigin(menuText.getLocalBounds().width / 2, menuText.getLocalBounds().height / 2);
 
 
     int score = 0;
@@ -294,6 +290,7 @@ int main() {
 
     float spawnTimer = 0.0f;
     float bulletTimer = 0.0f;
+    static float elapsedTime = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -338,7 +335,29 @@ int main() {
 
         if (gameState == GameState::MainMenu) {
             // Highlight the texts
+            // Reset player
+            player.setDead(false);
+            player.setHealth(MAX_PLAYER_HEALTH);
+            player.setPosition(WORLD_SIZE.x / 2, WORLD_SIZE.y / 2);
 
+            // Clear bullets
+            for (auto* bullet : bullets) {
+                delete bullet;
+            }
+            bullets.clear();
+
+            // Clear enemies
+            for (auto* enemy : enemies) {
+                delete enemy;
+            }
+            enemies.clear();
+
+            // Reset game variables
+            score = 0;
+            elapsedTime = 0.0f;
+            spawnTimer = 0.0f;
+            bulletTimer = 0.0f;
+            SPAWN_INTERVAL = 2.0f;
 
             highlightText(playText, worldMousePos, 40, 45);
             highlightText(exitText, worldMousePos, 40, 45);
@@ -401,7 +420,7 @@ int main() {
 
 
 
-            static float elapsedTime = 0;
+            
             elapsedTime += deltaTime;
 
             if (SPAWN_INTERVAL > 1.0f)
@@ -473,7 +492,6 @@ int main() {
             }
 
             view.setCenter(player.GetPosition());
-
 
             //////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -689,9 +707,34 @@ int main() {
 
 
         else if (gameState == GameState::GameOver) {
-            // Handle Game Over state
+            
+            // Reset player
+            player.setDead(false);
+            player.setHealth(MAX_PLAYER_HEALTH);
+            player.setPosition(WORLD_SIZE.x / 2, WORLD_SIZE.y / 2);
 
-            //highlightText(exitText, worldMousePos, 40, 45);
+            // Clear bullets
+            for (auto* bullet : bullets) {
+                delete bullet;
+            }
+            bullets.clear();
+
+            // Clear enemies
+            for (auto* enemy : enemies) {
+                delete enemy;
+            }
+            enemies.clear();
+
+            // Reset game variables
+            score = 0;
+            elapsedTime = 0.0f;
+            spawnTimer = 0.0f;
+            bulletTimer = 0.0f;
+            SPAWN_INTERVAL = 2.0f;
+
+
+            highlightText(exitText, worldMousePos, 40, 45);
+            highlightText(menuText, worldMousePos, 40, 45);
 
             if (!gameOverS)
             {
@@ -712,11 +755,20 @@ int main() {
             exitText.setOrigin(exitBounds.width / 2.0f, exitBounds.height / 2.0f);
             exitText.setPosition(view.getCenter().x, view.getCenter().y + 50.0f);
 
+            sf::FloatRect menuBounds = menuText.getLocalBounds();
+            menuText.setOrigin(menuBounds.width / 2.0f, menuBounds.height / 2.0f);
+            menuText.setPosition(view.getCenter().x, view.getCenter().y);
+
             // Handle mouse click
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                 if (exitText.getGlobalBounds().contains(worldMousePos)) {
                     transitionSound.play();
                     window.close();
+                }
+                else if (menuText.getGlobalBounds().contains(worldMousePos)) {
+                    transitionSound.play();
+                    gameState = GameState::MainMenu;
+
                 }
             }
 
@@ -727,6 +779,10 @@ int main() {
 
 
             window.draw(GameOverText);
+            window.draw(exitText);
+
+            window.draw(menuText);
+
 
             // Optionally, add logic to restart the game or exit
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
