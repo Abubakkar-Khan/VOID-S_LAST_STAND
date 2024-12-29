@@ -431,6 +431,7 @@ int main() {
                 spawnX += rand() % 100 - 50; // -50 to 49 random 
                 spawnY += rand() % 100 - 50;
 
+                // enemy toggle
                 if (e)
                 {
                     enemies.push_back(new Enemy(&enemyTexture, sf::Vector2u(5, 2), 0.02, sf::Vector2f(30.0f, 40.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
