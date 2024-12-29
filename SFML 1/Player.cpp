@@ -2,7 +2,7 @@
 #include <iostream>
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float health) :
-	animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), collider(body), health(health)
+	animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), collider(body), health(health), dead(false)
 {
 	row = 2;
 
@@ -68,7 +68,7 @@ void Player::Draw(sf::RenderWindow& window)
     window.draw(body);
 }
 
-bool Player::isDead()
+bool Player::isDead() const
 {
     return dead;
 }
@@ -85,7 +85,6 @@ void Player::setDead(bool die)
     if (health <= 0)
     {
         dead = true; 
-        std::cout << "Player is DEAD: "<< std::endl;
         std::cout << "Player is DEAD: "<< std::endl;
         std::cout << "GAME OVER: "<< std::endl;
     }

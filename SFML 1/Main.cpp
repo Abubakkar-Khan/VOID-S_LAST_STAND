@@ -172,7 +172,7 @@ int main() {
     );
     backgroundSprite.setPosition(window.getSize().x / 2,
         window.getSize().y / 2);
-    backgroundSprite.setColor(sf::Color(255, 255, 255, 160));
+    backgroundSprite.setColor(sf::Color(255, 155, 155, 120));
 
 
 
@@ -228,7 +228,7 @@ int main() {
     }
 
     sf::Texture enemyTexture;
-    if (!enemyTexture.loadFromFile("textures/alien.png")) {
+    if (!enemyTexture.loadFromFile("textures/neye.png")) {
         cerr << "Error loading enemy texture!" << endl;
         return -1;
     }
@@ -408,7 +408,7 @@ int main() {
                 spawnX += rand() % 100 - 50; // -50 to 49 random 
                 spawnY += rand() % 100 - 50;
 
-                enemies.push_back(new Enemy(nullptr, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
+                enemies.push_back(new Enemy(&enemyTexture,sf::Vector2u(10, 1), 0.02, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
             }
 
             bulletTimer += deltaTime;
@@ -513,8 +513,6 @@ int main() {
                     }
                 }
 
-                // Draw the cursor sprite for visual feedback
-                window.draw(cursorSprite);
 
                 // Check and delete dead enemies
                 for (auto enemy = enemies.begin(); enemy != enemies.end();) {
@@ -547,6 +545,7 @@ int main() {
             player.Draw(window);
             string scoreString = to_string(score);
             scoreText.setString(scoreString);
+            window.draw(cursorSprite);
 
 
 

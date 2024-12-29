@@ -2,15 +2,17 @@
 #include <cmath>
 #include <iostream>
 
-Enemy::Enemy(sf::Texture* texture, sf::Vector2f size, sf::Vector2f position, float health) : collider(body), health(health)
+Enemy::Enemy(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
+    sf::Vector2f size, sf::Vector2f position, float health) : animation(texture, imageCount, switchTime), collider(body), health(health)
 {
     dead = false;
+    row = 0;
 
     body.setSize(size);
     body.setOrigin(size / 2.0f);  // Set origin to the center
-    body.setTexture(texture);
     body.setPosition(position);
-    body.setFillColor(sf::Color(250, 50, 50));
+    body.setFillColor(sf::Color(50, 250, 50));
+    body.setTexture(texture);
 }
 
 void Enemy::Draw(sf::RenderWindow& window)
@@ -28,9 +30,11 @@ void Enemy::Update(sf::Vector2f playerPos, float daltaTime)
     if (magnitude != 0) {
         direction /= magnitude;  // Normalize the direction
     }
+    animation.update(row, daltaTime);
 
     // Move the enemy towards the player
     float speed = 100.f;  // Speed of the enemy
+    body.setTextureRect(animation.uvRect);
     body.move(direction * speed * daltaTime);  // Move with a multiplier to adjust speed
 }
 

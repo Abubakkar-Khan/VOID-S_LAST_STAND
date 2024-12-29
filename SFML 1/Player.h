@@ -30,7 +30,7 @@ public:
 	sf::Vector2f GetSize() { return body.getSize(); }
 	float GetHealth() const { return health; }
 	
-	bool isDead();
+	bool isDead() const;
 	void setDead(bool die);
 
 
