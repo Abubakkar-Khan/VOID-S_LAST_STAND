@@ -1,6 +1,8 @@
 #include "Collider.h"
 #include <iostream>
 
+// AABB Implementation (Geometry Theorem)
+
 Collider::Collider(sf::RectangleShape& body) : body(body) {}
 
 bool Collider::CheckCollision(Collider& other, float push)

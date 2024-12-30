@@ -9,7 +9,6 @@ private:
 
 public:
 	Collider(sf::RectangleShape& body);
-	Collider(const sf::RectangleShape& body);
 
 	void Move(float dx, float dy) { body.move(dx, dy); }
 

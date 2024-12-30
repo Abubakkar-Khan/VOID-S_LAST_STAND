@@ -30,12 +30,14 @@ static const float VIEW_HEIGHT = 512;
 float SPAWN_INTERVAL = 2.0f;
 float BULLET_INTERVAL = 0.2f;
 
+// Keeps the Asc\pect Ratio correct
 static void ResizeView(const sf::RenderWindow& window, sf::View& view)
 {
     float aspectRatio = static_cast<float>(window.getSize().x) / static_cast<float>(window.getSize().y);
     view.setSize(VIEW_HEIGHT * aspectRatio, VIEW_HEIGHT);
 }
 
+// Highlight the game text
 void highlightText(sf::Text& text, sf::Vector2f worldMousePos, int defaultSize, int hoverSize) {
     bool isMouseOver = text.getGlobalBounds().contains(worldMousePos);
 
@@ -52,13 +54,31 @@ void highlightText(sf::Text& text, sf::Vector2f worldMousePos, int defaultSize, 
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Main
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
-    sf::RenderWindow window(sf::VideoMode(1000, 700), "SFML Tutorial", sf::Style::Close | sf::Style::Fullscreen);
+    // Rendering Window
+    sf::RenderWindow window(sf::VideoMode(1000, 700), "Void;s Last Stand", sf::Style::Close | sf::Style::Fullscreen);
     sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // Loading Textures 
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     sf::Texture cursorTexture;
     if (!cursorTexture.loadFromFile("textures/aim.png")) {
         cerr << "Error loading cursor texture!" << endl;
@@ -72,25 +92,9 @@ int main() {
     sf::Texture bulletTexture;
     if (!bulletTexture.loadFromFile("textures/11.png"))
     {
-        cerr << "Error loading cursor texture!" << endl;
+        cerr << "Error loading Bullet texture!" << endl;
         return -1;
     }
-
-    sf::Texture blastTexture;
-    if (!blastTexture.loadFromFile("textures/smoke.png")) {
-        cerr << "Error loading blast Texture!" << endl;
-        return -1;
-    }
-    sf::Sprite blastSprite(blastTexture);
-    Animation blastAnimation(&blastTexture, sf::Vector2u(11, 15), 0.2f);
-    sf::RectangleShape blastBody;
-    sf::Vector2f blastSize(10.0f, 10.0f);
-    blastBody.setSize(blastSize);
-    blastBody.setOrigin(blastSize / 2.0f);  // Set origin to the center
-    blastBody.setFillColor(sf::Color(50, 250, 50));
-    blastBody.setTexture(&blastTexture);
-
-
 
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("textures/purple.png")) {
@@ -104,25 +108,34 @@ int main() {
         WORLD_SIZE.x / backgroundTexture.getSize().y * 2,
         WORLD_SIZE.y / backgroundTexture.getSize().y * 2
     );
-    backgroundSprite.setPosition(window.getSize().x / 2,
-        window.getSize().y / 2);
-    backgroundSprite.setColor(sf::Color(255, 155, 155, 60));
+    backgroundSprite.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+    backgroundSprite.setColor(sf::Color(155, 255, 155, 60));
 
 
-    srand(static_cast<unsigned int>(time(0)));
 
-    sf::Text timerText;
-    sf::Text scoreText;
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // Game Texts
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     sf::Font font;
     if (!font.loadFromFile("Fonts/V.ttf")) {
         cerr << "Error loading font!" << endl;
         return -1;
     }
 
+    
+    // Play state Text
+    sf::Text timerText;
     timerText.setFont(font);
     timerText.setCharacterSize(30);
     timerText.setFillColor(sf::Color::White);
 
+    sf::Text scoreText;
     scoreText.setFont(font);
     scoreText.setCharacterSize(20);
     scoreText.setFillColor(sf::Color::White);
@@ -140,7 +153,14 @@ int main() {
     scoreLabel.setString("Score");
     scoreLabel.setOrigin(scoreLabel.getLocalBounds().width / 2, scoreLabel.getLocalBounds().height / 2);
 
-
+    
+    // Main Menu Text
+    sf::Text titleText;
+    titleText.setFont(font);
+    titleText.setCharacterSize(60);
+    titleText.setFillColor(sf::Color::White);
+    titleText.setString("VOID'S LAST STAND");
+    titleText.setOrigin(titleText.getLocalBounds().width / 2, titleText.getLocalBounds().height / 2);
 
     sf::Text playText;
     playText.setFont(font);
@@ -148,25 +168,6 @@ int main() {
     playText.setFillColor(sf::Color::White);
     playText.setString("Play");
     playText.setOrigin(playText.getLocalBounds().width / 2, playText.getLocalBounds().height / 2);
-
-
-    sf::Text GameOverText;
-    GameOverText.setFont(font);
-    GameOverText.setCharacterSize(60);
-    GameOverText.setFillColor(sf::Color::White);
-    GameOverText.setString("GameOver");
-    GameOverText.setOrigin(GameOverText.getLocalBounds().width / 2, GameOverText.getLocalBounds().height / 2);
-
-    bool GameOver = false;
-
-
-
-    sf::Text titleText;
-    titleText.setFont(font);
-    titleText.setCharacterSize(60);
-    titleText.setFillColor(sf::Color::White);
-    titleText.setString("VOID'S LAST STAND");
-    titleText.setOrigin(titleText.getLocalBounds().width / 2, titleText.getLocalBounds().height / 2);
 
     sf::Text exitText;
     exitText.setFont(font);
@@ -193,9 +194,23 @@ int main() {
     menuText.setFillColor(sf::Color::White);
     menuText.setString("Main Menu");
 
+    sf::Text GameOverText;
+    GameOverText.setFont(font);
+    GameOverText.setCharacterSize(60);
+    GameOverText.setFillColor(sf::Color::White);
+    GameOverText.setString("GameOver");
+    GameOverText.setOrigin(GameOverText.getLocalBounds().width / 2, GameOverText.getLocalBounds().height / 2);
+    
 
+
+
+    bool GameOver = false;
+    
+    // Inatialization Score
     int score = 0;
 
+    // Seeding Random no
+    srand(static_cast<unsigned int>(time(0)));
 
     // First call for consisten
     ResizeView(window, view);
@@ -415,12 +430,6 @@ int main() {
 
 
 
-
-
-
-
-
-            
             elapsedTime += deltaTime;
 
             if (SPAWN_INTERVAL > 1.0f)
@@ -478,7 +487,7 @@ int main() {
             bulletTimer += deltaTime;
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bulletTimer >= BULLET_INTERVAL)
             {
-                bullets.push_back(new Bullet(&bulletTexture, player.GetPosition(), worldMousePosInt, 800.0, 3.0f, { 20.0 , 20.0}));
+                bullets.push_back(new Bullet(&bulletTexture, player.GetPosition(), worldMousePosInt, 800.0, 3.0f, { 20.0 , 20.0 }));
                 bulletSound.play();
                 bulletTimer = 0;
             }
@@ -566,7 +575,7 @@ int main() {
                         score++;
 
                         // Delete the bullet
-                        if ((*bullet)->isDead()) 
+                        if ((*bullet)->isDead())
                         {
                             delete* bullet;  // Free memory
                         }
@@ -579,11 +588,10 @@ int main() {
                 // Check and delete dead enemies
                 for (auto enemy = enemies.begin(); enemy != enemies.end();) {
                     if ((*enemy)->isDead()) {
-                        blastSprite.setPosition((*enemy)->getPosition());
                         delete* enemy;  // Delete the enemy
-                        
-                        enemySound.play();  
-                        enemy = enemies.erase(enemy);  
+
+                        enemySound.play();
+                        enemy = enemies.erase(enemy);
                     }
                     else {
                         ++enemy;  // Move to the next enemy if not dead
@@ -616,13 +624,12 @@ int main() {
             for (auto& enemy : enemies)
                 enemy->Update(playerPos, deltaTime);
 
-            
+
 
 
             for (auto& enemy : enemies)
                 enemy->Draw(window);
 
-            //window.draw(blastSprite);
 
             window.draw(timerText);
             window.draw(scoreText);
@@ -643,6 +650,8 @@ int main() {
 
 
         }
+
+
         if (gameState == GameState::Paused) {
             // Highlight the texts for pause menu options
             highlightText(resumeText, worldMousePos, 40, 45);
@@ -683,7 +692,7 @@ int main() {
             window.clear();
             window.draw(backgroundSprite);
 
-            
+
             window.draw(pauseText);
             window.draw(resumeText);
             window.draw(menuText);
@@ -692,7 +701,7 @@ int main() {
 
 
         else if (gameState == GameState::GameOver) {
-            
+
             // Reset player
             player.setDead(false);
             player.setHealth(MAX_PLAYER_HEALTH);

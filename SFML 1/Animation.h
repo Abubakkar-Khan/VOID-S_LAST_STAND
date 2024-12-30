@@ -8,12 +8,9 @@ private:
 	float totalTime;
 	float switchTime;
 
-
 public:
 	sf::IntRect uvRect;
 
-
-public:
 	Animation(sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
 	void update(int row, float deltaTime);
 };

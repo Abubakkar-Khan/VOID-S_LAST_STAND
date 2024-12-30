@@ -24,7 +24,7 @@ void Animation::update(int row, float deltaTime)
         currentImage.x++; // Move to the next frame (column)
         if (currentImage.x >= imageCount.x)
         {
-            currentImage.x = 0; // Loop back to the first frame
+            currentImage.x = 0; // back to the first frame
         }
     }
 
