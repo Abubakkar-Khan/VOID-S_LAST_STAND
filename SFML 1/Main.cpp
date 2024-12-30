@@ -370,9 +370,6 @@ int main() {
         }
 
         if (gameState == GameState::MainMenu) {
-
-            //window.setMouseCursorVisible(true);
-
             // Reset player
             player.setDead(false);
             player.setHealth(MAX_PLAYER_HEALTH);
@@ -453,7 +450,6 @@ int main() {
             window.clear();
 
             gameOverS = false;
-            //window.setMouseCursorVisible(false);
 
 
 
@@ -582,7 +578,6 @@ int main() {
                     enemies[i]->GetCollider().CheckCollision(enemies[j]->GetCollider(), 0.0f);
 
 
-            /*cursorSprite.setPosition(worldMousePos);*/
 
             window.clear();
 
@@ -680,8 +675,6 @@ int main() {
 
 
         if (gameState == GameState::Paused) {
-            //window.setMouseCursorVisible(true);
-
 
             // Highlight the texts for pause menu options
             highlightText(resumeText, worldMousePos, 40, 45);
@@ -732,7 +725,6 @@ int main() {
 
 
         else if (gameState == GameState::GameOver) {
-            //window.setMouseCursorVisible(true);
 
             // Reset player
             player.setDead(false);
@@ -767,6 +759,37 @@ int main() {
                 gameOverSound.play();
                 gameOverS = true;
             }
+
+
+
+
+
+            //// Reset player
+            //player.setDead(false);
+            //player.setHealth(MAX_PLAYER_HEALTH);
+            //player.setPosition(WORLD_SIZE.x / 2, WORLD_SIZE.y / 2);
+
+            //// Clear bullets
+            //for (auto* bullet : bullets) {
+            //    delete bullet;
+            //}
+            //bullets.clear();
+
+            //// Clear enemies
+            //for (auto* enemy : enemies) {
+            //    delete enemy;
+            //}
+            //enemies.clear();
+
+            //// Reset game variables
+            //score = 0;
+            //elapsedTime = 0.0f;
+            //spawnTimer = 0.0f;
+            //bulletTimer = 0.0f;
+            //SPAWN_INTERVAL = 2.0f;
+
+
+
 
             // Center the view for menu
             view.setCenter(sf::Vector2f(0.0f, 0.0f));
