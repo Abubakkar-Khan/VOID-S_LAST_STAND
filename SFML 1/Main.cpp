@@ -334,6 +334,9 @@ int main() {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Vector2f worldMousePos = window.mapPixelToCoords(mousePos, view);
 
+        cursorSprite.setPosition(worldMousePos);
+        window.setMouseCursorVisible(false);
+
         deltaTime = clock.restart().asSeconds();
         sf::Event evnt;
 
@@ -368,7 +371,7 @@ int main() {
 
         if (gameState == GameState::MainMenu) {
 
-            window.setMouseCursorVisible(true);
+            //window.setMouseCursorVisible(true);
 
             // Reset player
             player.setDead(false);
@@ -394,6 +397,7 @@ int main() {
             bulletTimer = 0.0f;
             SPAWN_INTERVAL = 2.0f;
 
+            GameOver = false;
 
             // Highlight the texts
             highlightText(playText, worldMousePos, 40, 45);
@@ -437,6 +441,7 @@ int main() {
             window.draw(titleText);
             window.draw(playText);
             window.draw(exitText);
+            window.draw(cursorSprite);
             window.display();
         }
 
@@ -448,7 +453,7 @@ int main() {
             window.clear();
 
             gameOverS = false;
-            window.setMouseCursorVisible(false);
+            //window.setMouseCursorVisible(false);
 
 
 
@@ -577,7 +582,7 @@ int main() {
                     enemies[i]->GetCollider().CheckCollision(enemies[j]->GetCollider(), 0.0f);
 
 
-            cursorSprite.setPosition(worldMousePos);
+            /*cursorSprite.setPosition(worldMousePos);*/
 
             window.clear();
 
@@ -675,7 +680,7 @@ int main() {
 
 
         if (gameState == GameState::Paused) {
-            window.setMouseCursorVisible(true);
+            //window.setMouseCursorVisible(true);
 
 
             // Highlight the texts for pause menu options
@@ -721,12 +726,13 @@ int main() {
             window.draw(pauseText);
             window.draw(resumeText);
             window.draw(menuText);
+            window.draw(cursorSprite);
             window.display();
         }
 
 
         else if (gameState == GameState::GameOver) {
-            window.setMouseCursorVisible(true);
+            //window.setMouseCursorVisible(true);
 
             // Reset player
             player.setDead(false);
@@ -802,7 +808,7 @@ int main() {
             window.draw(exitText);
 
             window.draw(menuText);
-
+            window.draw(cursorSprite);
 
             // Optionally, add logic to restart the game or exit
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
