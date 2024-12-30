@@ -79,6 +79,26 @@ int main() {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
+
+    sf::Texture playerTexture;
+    if (!playerTexture.loadFromFile("textures/p3.png")) {
+        cerr << "Error loading player texture!" << endl;
+        return -1;
+    }
+
+    sf::Texture enemyTexture;
+    if (!enemyTexture.loadFromFile("textures/ship.png")) {
+        cerr << "Error loading enemy texture!" << endl;
+        return -1;
+    }
+
+    sf::Texture enemyTexture2;
+    if (!enemyTexture2.loadFromFile("textures/ship.png")) {
+        cerr << "Error loading enemy2 texture!" << endl;
+        return -1;
+    }
+
+
     sf::Texture cursorTexture;
     if (!cursorTexture.loadFromFile("textures/aim.png")) {
         cerr << "Error loading cursor texture!" << endl;
@@ -129,7 +149,7 @@ int main() {
     }
 
     
-    // Play state Text
+    // Gameplay Screen Text
     sf::Text timerText;
     timerText.setFont(font);
     timerText.setCharacterSize(30);
@@ -154,7 +174,7 @@ int main() {
     scoreLabel.setOrigin(scoreLabel.getLocalBounds().width / 2, scoreLabel.getLocalBounds().height / 2);
 
     
-    // Main Menu Text
+    // Main Menu Screen Text
     sf::Text titleText;
     titleText.setFont(font);
     titleText.setCharacterSize(60);
@@ -175,6 +195,8 @@ int main() {
     exitText.setFillColor(sf::Color::White);
     exitText.setString("Exit");
 
+    
+    // Pause Screen Text
     sf::Text pauseText;
     pauseText.setFont(font);
     pauseText.setCharacterSize(60);
@@ -194,6 +216,8 @@ int main() {
     menuText.setFillColor(sf::Color::White);
     menuText.setString("Main Menu");
 
+
+    // Game over Screen text
     sf::Text GameOverText;
     GameOverText.setFont(font);
     GameOverText.setCharacterSize(60);
@@ -201,9 +225,6 @@ int main() {
     GameOverText.setString("GameOver");
     GameOverText.setOrigin(GameOverText.getLocalBounds().width / 2, GameOverText.getLocalBounds().height / 2);
     
-
-
-
     bool GameOver = false;
     
     // Inatialization Score
@@ -215,19 +236,23 @@ int main() {
     // First call for consisten
     ResizeView(window, view);
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Bullet Sound
+    // Sound Setup
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::SoundBuffer bulletSoundBuffer;
     if (!bulletSoundBuffer.loadFromFile("Sounds/laser.wav"))
     {
         cerr << "Error loading bullet sound!" << endl;
         return -1;
     }
-
     sf::Sound bulletSound;
     bulletSound.setBuffer(bulletSoundBuffer);
+
 
     sf::SoundBuffer enemySoundBuffer;
     if (!enemySoundBuffer.loadFromFile("Sounds/explode.mp3"))
@@ -235,11 +260,10 @@ int main() {
         cerr << "Error loading enemy explosion sound!" << endl;
         return -1;
     }
-
     sf::Sound enemySound;
     enemySound.setBuffer(enemySoundBuffer);
 
-    // Hover Sound
+    
     sf::SoundBuffer transitionSoundBuffer;
     if (!transitionSoundBuffer.loadFromFile("Sounds/Transition_3.wav"))
     {
@@ -249,45 +273,36 @@ int main() {
     sf::Sound transitionSound;
     transitionSound.setBuffer(transitionSoundBuffer);
 
+
     sf::SoundBuffer gameOverBuffer;
     if (!gameOverBuffer.loadFromFile("Sounds/gameover.mp3"))
     {
-        cerr << "Error loading gameover sound!" << endl;
+        cerr << "Error loading game over sound!" << endl;
         return -1;
     }
     sf::Sound gameOverSound;
     gameOverSound.setBuffer(gameOverBuffer);
 
+    // This will allow the Gameover sound to play ony once
     bool gameOverS = false;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Player
-    sf::Texture playerTexture;
-    if (!playerTexture.loadFromFile("textures/p3.png")) {
-        cerr << "Error loading player texture!" << endl;
-        return -1;
-    }
-
-    sf::Texture enemyTexture;
-    if (!enemyTexture.loadFromFile("textures/ship.png")) {
-        cerr << "Error loading enemy texture!" << endl;
-        return -1;
-    }
-
-    sf::Texture enemyTexture2;
-    if (!enemyTexture2.loadFromFile("textures/ship.png")) {
-        cerr << "Error loading enemy2 texture!" << endl;
-        return -1;
-    }
-    bool e = false;
-
+    
+    // Player Initialization
     Player player(&playerTexture, sf::Vector2u(1, 1), 2.0f, MAX_PLAYER_HEALTH);
 
+
+
+
+    // Delta Time for Consistent gameplay (Frames)
     float deltaTime = 0.0f;
     sf::Clock clock;
 
+    window.setFramerateLimit(60);  // Limits FPS to 60
+    
+    
     // Boundry Wall
     sf::FloatRect worldBounds(0, 0, WORLD_SIZE.x, WORLD_SIZE.y);
     sf::RectangleShape boundary(sf::Vector2f(worldBounds.width - 2, worldBounds.height));
@@ -297,25 +312,25 @@ int main() {
     boundary.setFillColor(sf::Color::Transparent);
 
 
-
-    window.setFramerateLimit(60);  // Limits FPS to 60
-
+    // Storing Bullets and Enemies
     vector<Bullet*> bullets;
     vector<Enemy*> enemies;
 
-    float spawnTimer = 0.0f;
-    float bulletTimer = 0.0f;
-    static float elapsedTime = 0;
+    float spawnTimer = 0.0f; // For Enemy Spawn time
+    float bulletTimer = 0.0f; // For Bullet Time
+    static float elapsedTime = 0; // For timer
 
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////
+    bool e = false; // Allows Enemy Toggle
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Game loop
+    // Game loop 😑   
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     while (window.isOpen()) {
-
-        window.setMouseCursorVisible(true);
-
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Vector2f worldMousePos = window.mapPixelToCoords(mousePos, view);
 
@@ -327,6 +342,7 @@ int main() {
             case sf::Event::Closed:
                 window.close();
                 break;
+
             case sf::Event::KeyPressed:
                 if (evnt.key.code == sf::Keyboard::Escape) {
                     if (gameState == GameState::Playing) {
@@ -337,10 +353,12 @@ int main() {
                     }
                 }
                 break;
+
             case sf::Event::Resized:
                 ResizeView(window, view);
                 cout << window.getSize().x << ":" << window.getSize().y << endl;
                 break;
+
             case sf::Event::TextEntered:
                 if (evnt.text.unicode < 128)
                     printf(" %c", evnt.text.unicode);
@@ -349,7 +367,9 @@ int main() {
         }
 
         if (gameState == GameState::MainMenu) {
-            // Highlight the texts
+
+            window.setMouseCursorVisible(true);
+
             // Reset player
             player.setDead(false);
             player.setHealth(MAX_PLAYER_HEALTH);
@@ -374,6 +394,8 @@ int main() {
             bulletTimer = 0.0f;
             SPAWN_INTERVAL = 2.0f;
 
+
+            // Highlight the texts
             highlightText(playText, worldMousePos, 40, 45);
             highlightText(exitText, worldMousePos, 40, 45);
 
@@ -653,6 +675,9 @@ int main() {
 
 
         if (gameState == GameState::Paused) {
+            window.setMouseCursorVisible(true);
+
+
             // Highlight the texts for pause menu options
             highlightText(resumeText, worldMousePos, 40, 45);
             highlightText(menuText, worldMousePos, 40, 45);
@@ -701,6 +726,7 @@ int main() {
 
 
         else if (gameState == GameState::GameOver) {
+            window.setMouseCursorVisible(true);
 
             // Reset player
             player.setDead(false);
