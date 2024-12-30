@@ -7,8 +7,8 @@ class Entity
 {
 protected:
     bool dead;
-    Collider collider;
     sf::RectangleShape body;
+    Collider collider;
 
 public:
     Entity(sf::Texture* texture, sf::Vector2f position, sf::Vector2f size); // Constructor

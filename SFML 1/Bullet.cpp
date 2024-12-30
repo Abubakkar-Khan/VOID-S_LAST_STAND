@@ -5,13 +5,7 @@
 Bullet::Bullet(sf::Texture* texture, sf::Vector2f position, sf::Vector2i target, float speed, float life, sf::Vector2f size)
     : Entity(texture, position, size), speed(speed), age(0.0f), lifetime(life)
 {
-    dead = false;
-
-    body.setSize(sf::Vector2f(size, size)); // Set bullet size
     //body.setFillColor(sf::Color::Yellow); // Bullet color
-
-    body.setOrigin(body.getSize().x / 2.f, body.getSize().y / 2.f);
-    body.setPosition(position);
 
     // Calculate direction vector from the bullet's position to the target (mouse position)
     sf::Vector2f direction(target.x - position.x, target.y - position.y);
@@ -25,9 +19,8 @@ Bullet::Bullet(sf::Texture* texture, sf::Vector2f position, sf::Vector2i target,
     // Calculate the angle in radians and convert it to degrees
     float angle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159f;  // atan2 returns the angle in radians
 
-    body.setRotation(angle); // Set the bullet's rotation based on the angle
-    body.setTexture(texture);
-    velocity = direction * speed; // Set velocity based on the normalized direction and speed
+    body.setRotation(angle); 
+    velocity = direction * speed; 
 }
 
 void Bullet::Update(float deltaTime)
@@ -37,10 +30,6 @@ void Bullet::Update(float deltaTime)
     age += deltaTime;
 }
 
-void Bullet::Draw(sf::RenderWindow& window)
-{
-    window.draw(body);  // Draw the bullet on the window
-}
 
 bool Bullet::isDead()
 {
@@ -51,7 +40,4 @@ bool Bullet::isDead()
     return dead;
 }
 
-void Bullet::setDead(bool die)
-{
-    dead = die;
-}
+
