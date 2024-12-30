@@ -3,22 +3,13 @@
 #include <iostream>
 
 Enemy::Enemy(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
-    sf::Vector2f size, sf::Vector2f position, float health) : animation(texture, imageCount, switchTime), collider(body), health(health)
+    sf::Vector2f size, sf::Vector2f position, float health) : Entity(texture, position, size), animation(texture, imageCount, switchTime), health(health)
 {
-    dead = false;
     row = 0;
 
-    body.setSize(size);
-    body.setOrigin(size / 2.0f);  // Set origin to the center
-    body.setPosition(position);
     body.setFillColor(sf::Color(150, 250, 150));
-    body.setTexture(texture);
 }
 
-void Enemy::Draw(sf::RenderWindow& window)
-{
-    window.draw(body);  // Draw the enemy to the screen
-}
 
 void Enemy::Update(sf::Vector2f playerPos, float daltaTime)
 {
@@ -34,7 +25,7 @@ void Enemy::Update(sf::Vector2f playerPos, float daltaTime)
     
     // Calculate the angle in radians and convert it to degrees
     float angle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159f;  // atan2 returns the angle in radians
-
+    
     body.setRotation(angle + 90);
 
     // Move the enemy towards the player
@@ -43,13 +34,7 @@ void Enemy::Update(sf::Vector2f playerPos, float daltaTime)
     body.move(direction * speed * daltaTime);  // Move with a multiplier to adjust speed
 }
 
-
-bool Enemy::isDead() const
-{
-    return dead;
-}
-
-void Enemy::setDead(bool die)
+void Enemy::setDead(bool die) 
 {
     if (die)
     {

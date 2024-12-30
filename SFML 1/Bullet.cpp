@@ -2,16 +2,16 @@
 
 
 
-Bullet::Bullet(sf::Texture* texture, sf::Vector2f position, sf::Vector2i target, float speed, float life, float size)
-    : speed(speed), collider(shape), age(0.0f), lifetime(life)
+Bullet::Bullet(sf::Texture* texture, sf::Vector2f position, sf::Vector2i target, float speed, float life, sf::Vector2f size)
+    : Entity(texture, position, size), speed(speed), age(0.0f), lifetime(life)
 {
     dead = false;
 
-    shape.setSize(sf::Vector2f(size, size)); // Set bullet size
-    //shape.setFillColor(sf::Color::Yellow); // Bullet color
+    body.setSize(sf::Vector2f(size, size)); // Set bullet size
+    //body.setFillColor(sf::Color::Yellow); // Bullet color
 
-    shape.setOrigin(shape.getSize().x / 2.f, shape.getSize().y / 2.f);
-    shape.setPosition(position);
+    body.setOrigin(body.getSize().x / 2.f, body.getSize().y / 2.f);
+    body.setPosition(position);
 
     // Calculate direction vector from the bullet's position to the target (mouse position)
     sf::Vector2f direction(target.x - position.x, target.y - position.y);
@@ -25,21 +25,21 @@ Bullet::Bullet(sf::Texture* texture, sf::Vector2f position, sf::Vector2i target,
     // Calculate the angle in radians and convert it to degrees
     float angle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159f;  // atan2 returns the angle in radians
 
-    shape.setRotation(angle); // Set the bullet's rotation based on the angle
-    shape.setTexture(texture);
+    body.setRotation(angle); // Set the bullet's rotation based on the angle
+    body.setTexture(texture);
     velocity = direction * speed; // Set velocity based on the normalized direction and speed
 }
 
-void Bullet::update(float deltaTime)
+void Bullet::Update(float deltaTime)
 {
     // Move the bullet based on its velocity
-    shape.move(velocity * deltaTime);  // Bullet speed adjusted by deltaTime
+    body.move(velocity * deltaTime);  // Bullet speed adjusted by deltaTime
     age += deltaTime;
 }
 
 void Bullet::Draw(sf::RenderWindow& window)
 {
-    window.draw(shape);  // Draw the bullet on the window
+    window.draw(body);  // Draw the bullet on the window
 }
 
 bool Bullet::isDead()

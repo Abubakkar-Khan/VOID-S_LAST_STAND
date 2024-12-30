@@ -106,7 +106,7 @@ int main() {
     );
     backgroundSprite.setPosition(window.getSize().x / 2,
         window.getSize().y / 2);
-    backgroundSprite.setColor(sf::Color(255, 155, 155, 160));
+    backgroundSprite.setColor(sf::Color(255, 155, 155, 60));
 
 
     srand(static_cast<unsigned int>(time(0)));
@@ -262,7 +262,7 @@ int main() {
     }
 
     sf::Texture enemyTexture2;
-    if (!enemyTexture2.loadFromFile("textures/neye.png")) {
+    if (!enemyTexture2.loadFromFile("textures/ship.png")) {
         cerr << "Error loading enemy2 texture!" << endl;
         return -1;
     }
@@ -469,7 +469,7 @@ int main() {
                 }
                 else
                 {
-                    enemies.push_back(new Enemy(&enemyTexture2, sf::Vector2u(10, 1), 0.02, sf::Vector2f(40.0f, 40.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
+                    enemies.push_back(new Enemy(&enemyTexture2, sf::Vector2u(5, 2), 0.2, sf::Vector2f(50.0f, 80.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH + 4));
                     e = true;
                 }
 
@@ -478,11 +478,11 @@ int main() {
             bulletTimer += deltaTime;
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bulletTimer >= BULLET_INTERVAL)
             {
-                bullets.push_back(new Bullet(&bulletTexture, player.GetPosition(), worldMousePosInt, 800.0, 3.0f, 20.0));
+                bullets.push_back(new Bullet(&bulletTexture, player.GetPosition(), worldMousePosInt, 800.0, 3.0f, { 20.0 , 20.0}));
                 bulletSound.play();
                 bulletTimer = 0;
             }
-            //bullets.push_back(new Bullet(nullptr,  player.GetPosition(), worldMousePosInt, 0.2, 0.2f));
+            bullets.push_back(new Bullet(nullptr, player.GetPosition(), worldMousePosInt, 0.0, 0.08f, { 1.0 , 1.0 }));
 
             for (auto& enemy : enemies) {
                 if (enemy->GetCollider().CheckCollision(player.GetCollider(), 0.0f))
@@ -554,8 +554,6 @@ int main() {
             window.draw(boundary);
 
 
-            // Draw the player
-
             for (auto bullet = bullets.begin(); bullet != bullets.end();) {
                 bool hit = false;
 
@@ -568,28 +566,15 @@ int main() {
                         score++;
 
                         // Delete the bullet
-                        if ((*bullet)->isDead()) {
-
-                            //blastBody.setPosition(enemy->getPosition());
-
-
-                            //// Update the animation to get the first frame (row 0, for example)
-                            //blastAnimation.update(0, deltaTime);
-                            //// Set the texture rectangle of the sprite
-                            //blastBody.setTextureRect(blastAnimation.uvRect);
-
-
-                            
-
+                        if ((*bullet)->isDead()) 
+                        {
                             delete* bullet;  // Free memory
                         }
-                        bullet = bullets.erase(bullet);  // Erase the bullet from the vector
+                        bullet = bullets.erase(bullet);  // Erasig the bullet from the vector
                         hit = true;
                         break;
                     }
                 }
-
-                // Draw the cursor sprite for visual feedback
 
                 // Check and delete dead enemies
                 for (auto enemy = enemies.begin(); enemy != enemies.end();) {
@@ -597,8 +582,8 @@ int main() {
                         blastSprite.setPosition((*enemy)->getPosition());
                         delete* enemy;  // Delete the enemy
                         
-                        enemySound.play();  // Play sound when an enemy dies
-                        enemy = enemies.erase(enemy);  // Erase the enemy from the vector
+                        enemySound.play();  
+                        enemy = enemies.erase(enemy);  
                     }
                     else {
                         ++enemy;  // Move to the next enemy if not dead
@@ -607,7 +592,7 @@ int main() {
 
                 // If the bullet wasn't hit by any enemy, just continue to the next bullet
                 if (!hit) {
-                    (*bullet)->update(deltaTime);
+                    (*bullet)->Update(deltaTime);
 
                     if ((*bullet)->isDead()) {
                         delete* bullet;
@@ -799,3 +784,4 @@ int main() {
 
     return 0;
 }
+

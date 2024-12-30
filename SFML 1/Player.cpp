@@ -2,21 +2,15 @@
 #include <iostream>
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float health) :
-	animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), collider(body), health(health), dead(false)
+    Entity(texture, body.getPosition(), { 10.0f, 10.0f }), animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), health(health)
 {
 	row = 2;
 
-    acceleration = 20.0f;  // How fast the body accelerates
-    deceleration = 0.98f;  // How fast the body slows down when no key is pressed
-    maxSpeed = 8.0f;  // Maximum speed of the body
+    acceleration = 20.0f;  
+    deceleration = 0.98f; 
+    maxSpeed = 8.0f;  
 
-
-    body.setSize(sf::Vector2f(10, 10));
-    body.setOrigin(5, 5); 
-    body.setTexture(texture);
-    body.setPosition(206.0f, 206.0f);
 }
-
 
 void Player::Update(float deltaTime, sf::Vector2i mousePos)
 {
@@ -63,19 +57,9 @@ void Player::Update(float deltaTime, sf::Vector2i mousePos)
 }
 
 
-void Player::Draw(sf::RenderWindow& window)
-{
-    window.draw(body);
-}
-
 void Player::setHealth(float nHealth)
 {
     health = nHealth;
-}
-
-bool Player::isDead() const
-{
-    return dead;
 }
 
 void Player::setDead(bool die)
