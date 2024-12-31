@@ -518,7 +518,7 @@ int main() {
             bullets.push_back(new Bullet(nullptr, player.GetPosition(), worldMousePosInt, 0.0, 0.08f, { 1.0 , 1.0 }));
 
             for (auto& enemy : enemies) {
-                if (enemy->GetCollider().CheckCollision(player.GetCollider(), 0.0f))
+                if (enemy->GetCollider().CheckCollision(player.GetCollider(), 1.0f))
                 {
                     player.setDead(true);
                 }
