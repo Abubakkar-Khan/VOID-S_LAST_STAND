@@ -597,6 +597,10 @@ int main() {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // Player clamping (keep player inside world bounds)
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             sf::Vector2f playerSize = player.GetSize();
 
             if (playerPos.x < worldBounds.left)
@@ -616,12 +620,23 @@ int main() {
 
             /////////////////////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////////////////////////
-
+            
             // Check Enemies-Enemies Collisions
+            
+            /////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////
+
             for (size_t i = 0; i < enemies.size(); ++i)
                 for (size_t j = i + 1; j < enemies.size(); ++j)
                     enemies[i]->GetCollider().CheckCollision(enemies[j]->GetCollider(), 0.0f);
 
+            // Enemy Update
+            for (auto& enemy : enemies)
+                enemy->Update(playerPos, deltaTime);
+
+            // Score updated String
+            string scoreString = to_string(score);
+            scoreText.setString(scoreString);
 
 
             window.clear();
@@ -680,20 +695,10 @@ int main() {
                 }
             }
 
+            
+            player.Draw(window); 
 
-            player.Draw(window);
-            string scoreString = to_string(score);
-            scoreText.setString(scoreString);
-
-
-
-
-            for (auto& enemy : enemies)
-                enemy->Update(playerPos, deltaTime);
-
-
-
-
+            // Drawing Enemies 1 by 1
             for (auto& enemy : enemies)
                 enemy->Draw(window);
 
