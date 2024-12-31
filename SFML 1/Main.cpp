@@ -29,6 +29,7 @@ sf::Vector2f WORLD_SIZE(2500.0f, 2500.0f);
 static const float VIEW_HEIGHT = 700;
 float SPAWN_INTERVAL = 2.0f;
 float BULLET_INTERVAL = 0.2f;
+float TRANSITION_TIME = 0;
 
 // Keeps the Asc\pect Ratio correct
 static void ResizeView(const sf::RenderWindow& window, sf::View& view)
@@ -377,6 +378,8 @@ int main() {
 
 
         if (gameState == GameState::MainMenu) {
+            TRANSITION_TIME += deltaTime;
+
             // Reset player
             player.setDead(false);
             player.setHealth(MAX_PLAYER_HEALTH);
@@ -460,15 +463,16 @@ int main() {
 
 
         else if (gameState == GameState::Playing) {
+            TRANSITION_TIME += deltaTime;
+
             // Game logic and rendering
             window.clear();
 
             gameOverS = false;
 
-
-
             elapsedTime += deltaTime;
 
+            // The Enemy Spawn Interval reduces
             if (SPAWN_INTERVAL > 1.0f)
                 SPAWN_INTERVAL -= deltaTime * deltaTime;
             else
@@ -727,6 +731,7 @@ int main() {
         //////////////////////////////////////////////////////////////////////////////////
 
         if (gameState == GameState::Paused) {
+            TRANSITION_TIME += deltaTime;
 
             // Highlight the texts for pause menu options
             highlightText(resumeText, worldMousePos, 40, 45);
@@ -782,6 +787,7 @@ int main() {
         //////////////////////////////////////////////////////////////////////////////////
 
         if (gameState == GameState::GameOver) {
+            TRANSITION_TIME += deltaTime;
 
             // Reset player
             player.setDead(false);
@@ -822,36 +828,6 @@ int main() {
             }
 
 
-
-
-
-            //// Reset player
-            //player.setDead(false);
-            //player.setHealth(MAX_PLAYER_HEALTH);
-            //player.setPosition(WORLD_SIZE.x / 2, WORLD_SIZE.y / 2);
-
-            //// Clear bullets
-            //for (auto* bullet : bullets) {
-            //    delete bullet;
-            //}
-            //bullets.clear();
-
-            //// Clear enemies
-            //for (auto* enemy : enemies) {
-            //    delete enemy;
-            //}
-            //enemies.clear();
-
-            //// Reset game variables
-            //score = 0;
-            //elapsedTime = 0.0f;
-            //spawnTimer = 0.0f;
-            //bulletTimer = 0.0f;
-            //SPAWN_INTERVAL = 2.0f;
-
-
-
-
             // Center the view for menu
             view.setCenter(sf::Vector2f(0.0f, 0.0f));
             window.setView(view);
@@ -870,7 +846,8 @@ int main() {
             menuText.setPosition(view.getCenter().x, view.getCenter().y);
 
             // Handle mouse click
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && TRANSITION_TIME > 2) {
+                TRANSITION_TIME = 0;
                 if (exitText.getGlobalBounds().contains(worldMousePos)) {
                     transitionSound.play();
                     window.close();
