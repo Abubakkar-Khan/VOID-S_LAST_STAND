@@ -304,7 +304,7 @@ int main() {
     // Boundry Wall
     sf::FloatRect worldBounds(0, 0, WORLD_SIZE.x, WORLD_SIZE.y);
     sf::RectangleShape boundary(sf::Vector2f(worldBounds.width, worldBounds.height));
-    boundary.setPosition(worldBounds.left, worldBounds.top );
+    boundary.setPosition(worldBounds.left - 20, worldBounds.top - 20);
     boundary.setOutlineColor(sf::Color(255, 55, 55));
     boundary.setOutlineThickness(2);
     boundary.setFillColor(sf::Color::Transparent);
@@ -507,8 +507,8 @@ int main() {
             {
                 spawnTimer = 0.0f;
 
-                float spawnX = (rand() % 2 == 0) ? -50.0f : window.getSize().x + 50.0f;
-                float spawnY = (rand() % 2 == 0) ? -50.0f : window.getSize().y + 50.0f;
+                float spawnX = (rand() % 2 == 0) ? -100.0f : window.getSize().x + 100.0f;
+                float spawnY = (rand() % 2 == 0) ? -100.0f : window.getSize().y + 100.0f;
                 //body.setFillColor(sf::Color::Yellow); // Entity color
 
                 spawnX += rand() % 100 - 50; // -50 to 49 random 

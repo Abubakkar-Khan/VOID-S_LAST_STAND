@@ -9,7 +9,8 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
     acceleration = 20.0f;  
     deceleration = 0.98f; 
     maxSpeed = 8.0f;  
-
+    
+    //body.setFillColor(sf::Color(150, 250, 255));
 
 }
 
