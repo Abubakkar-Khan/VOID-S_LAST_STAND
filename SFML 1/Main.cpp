@@ -608,6 +608,7 @@ int main() {
                     }
                 }
 
+
                 // Check and delete dead enemies
                 for (auto enemy = enemies.begin(); enemy != enemies.end();) {
                     if ((*enemy)->isDead()) {
