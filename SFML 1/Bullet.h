@@ -5,7 +5,7 @@
 #include "Entity.h"
 
 
-class Bullet : public Entity
+class Bullet : virtual public Entity
 {
 private:
     float lifetime;

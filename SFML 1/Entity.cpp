@@ -11,7 +11,6 @@ Entity::Entity(sf::Texture* texture, sf::Vector2f position, sf::Vector2f size)
     body.setOrigin(body.getSize().x / 2.f, body.getSize().y / 2.f);
     body.setPosition(position);
 
-
     body.setTexture(texture);
 }
 
