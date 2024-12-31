@@ -7,7 +7,7 @@ Enemy::Enemy(sf::Texture* texture, sf::Vector2u imageCount, float switchTime,
 {
     row = 0;
 
-    body.setFillColor(sf::Color(150, 250, 150));
+    body.setFillColor(sf::Color(250, 150, 150));
 }
 
 

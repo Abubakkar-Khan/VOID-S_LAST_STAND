@@ -2,13 +2,14 @@
 #include <iostream>
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float health) :
-    Entity(texture, body.getPosition(), { 10.0f, 10.0f }), animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), health(health)
+    Entity(texture, body.getPosition(), { 40.0f, 40.0f }), animation(texture, imageCount, switchTime), movement(0.0f, 0.0f), health(health)
 {
-	row = 2;
+	row = 1;
 
     acceleration = 20.0f;  
     deceleration = 0.98f; 
     maxSpeed = 8.0f;  
+
 
 }
 
@@ -49,7 +50,7 @@ void Player::Update(float deltaTime, sf::Vector2i mousePos)
 
     body.setRotation(angle + 90); // + 90 for right angle
 
-    //animation.update(row, deltaTime);
+    animation.update(row, deltaTime);
 
     // Apply movement and update the player position
     body.setTextureRect(animation.uvRect);

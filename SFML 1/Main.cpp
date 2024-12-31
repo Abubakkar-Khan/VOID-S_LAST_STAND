@@ -81,19 +81,19 @@ int main() {
     
 
     sf::Texture playerTexture;
-    if (!playerTexture.loadFromFile("textures/p3.png")) {
+    if (!playerTexture.loadFromFile("textures/ship2.png")) {
         cerr << "Error loading player texture!" << endl;
         return -1;
     }
 
     sf::Texture enemyTexture;
-    if (!enemyTexture.loadFromFile("textures/ship.png")) {
+    if (!enemyTexture.loadFromFile("textures/ship2.png")) {
         cerr << "Error loading enemy texture!" << endl;
         return -1;
     }
 
     sf::Texture enemyTexture2;
-    if (!enemyTexture2.loadFromFile("textures/ship.png")) {
+    if (!enemyTexture2.loadFromFile("textures/enemy3.png")) {
         cerr << "Error loading enemy2 texture!" << endl;
         return -1;
     }
@@ -129,7 +129,7 @@ int main() {
         WORLD_SIZE.y / backgroundTexture.getSize().y * 2
     );
     backgroundSprite.setPosition(window.getSize().x / 2, window.getSize().y / 2);
-    backgroundSprite.setColor(sf::Color(155, 255, 155, 60));
+    backgroundSprite.setColor(sf::Color(155, 155, 255, 60));
 
 
 
@@ -291,7 +291,7 @@ int main() {
 
     
     // Player Initialization
-    Player player(&playerTexture, sf::Vector2u(1, 1), 2.0f, MAX_PLAYER_HEALTH);
+    Player player(&playerTexture, sf::Vector2u(4, 4), 0.2f, MAX_PLAYER_HEALTH);
 
 
 
@@ -489,6 +489,7 @@ int main() {
 
                 float spawnX = (rand() % 2 == 0) ? -50.0f : window.getSize().x + 50.0f;
                 float spawnY = (rand() % 2 == 0) ? -50.0f : window.getSize().y + 50.0f;
+                //body.setFillColor(sf::Color::Yellow); // Entity color
 
                 spawnX += rand() % 100 - 50; // -50 to 49 random 
                 spawnY += rand() % 100 - 50;
@@ -496,12 +497,12 @@ int main() {
                 // enemy toggle
                 if (e)
                 {
-                    enemies.push_back(new Enemy(&enemyTexture, sf::Vector2u(5, 2), 0.02, sf::Vector2f(30.0f, 40.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
+                    enemies.push_back(new Enemy(&enemyTexture, sf::Vector2u(4, 4), 0.5, sf::Vector2f(30.0f, 40.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
                     e = false;
                 }
                 else
                 {
-                    enemies.push_back(new Enemy(&enemyTexture2, sf::Vector2u(5, 2), 0.2, sf::Vector2f(50.0f, 80.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH + 4));
+                    enemies.push_back(new Enemy(&enemyTexture2, sf::Vector2u(8, 1), 0.1, sf::Vector2f(80.0f, 80.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH + 4));
                     e = true;
                 }
 
