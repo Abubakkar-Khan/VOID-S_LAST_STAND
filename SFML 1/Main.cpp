@@ -129,7 +129,7 @@ int main() {
         WORLD_SIZE.y / backgroundTexture.getSize().y * 2
     );
     backgroundSprite.setPosition(window.getSize().x / 2, window.getSize().y / 2);
-    backgroundSprite.setColor(sf::Color(155, 255, 155, 100));
+    backgroundSprite.setColor(sf::Color(255, 55, 55, 100));
 
 
 
@@ -289,11 +289,8 @@ int main() {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     // Player Initialization
     Player player(&playerTexture, sf::Vector2u(4, 4), 0.2f, MAX_PLAYER_HEALTH);
-
-
 
 
     // Delta Time for Consistent gameplay (Frames)
@@ -307,7 +304,7 @@ int main() {
     sf::FloatRect worldBounds(0, 0, WORLD_SIZE.x, WORLD_SIZE.y);
     sf::RectangleShape boundary(sf::Vector2f(worldBounds.width - 2, worldBounds.height));
     boundary.setPosition(worldBounds.left - 5, worldBounds.top - 5);
-    boundary.setOutlineColor(sf::Color(100, 200, 200));
+    boundary.setOutlineColor(sf::Color(255, 55, 55));
     boundary.setOutlineThickness(2);
     boundary.setFillColor(sf::Color::Transparent);
 
@@ -554,15 +551,6 @@ int main() {
                     player.setDead(true);
                 }
             }
-
-
-            ////////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////////
-
-            // UX / UX
-
-            ////////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////////
 
             
             view.setCenter(player.GetPosition());
