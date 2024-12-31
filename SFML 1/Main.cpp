@@ -19,7 +19,8 @@ enum class GameState {
     MainMenu,
     Playing,
     Paused,
-    GameOver
+    GameOver,
+    LeaderBoard
 };
 GameState gameState = GameState::MainMenu;
 
@@ -68,7 +69,7 @@ int main() {
     settings.antialiasingLevel = 8;
 
     // Rendering Window
-    sf::RenderWindow window(sf::VideoMode(1000, 700), "Void;s Last Stand", sf::Style::Close | sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode(1000, 700), "Void's Last Stand", sf::Style::Close | sf::Style::Fullscreen);
     sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
 
 
@@ -217,6 +218,14 @@ int main() {
     menuText.setFillColor(sf::Color::White);
     menuText.setString("Main Menu");
 
+
+    // Leaderboard Text
+    sf::Text leaderBoardText;
+    leaderBoardText.setFont(font);
+    leaderBoardText.setCharacterSize(40);
+    leaderBoardText.setFillColor(sf::Color::White);
+    leaderBoardText.setString("leader Board");
+    leaderBoardText.setOrigin(leaderBoardText.getLocalBounds().width / 2, leaderBoardText.getLocalBounds().height / 2);
 
     // Game over Screen text
     sf::Text GameOverText;
@@ -409,6 +418,7 @@ int main() {
             // Highlight the texts
             highlightText(playText, worldMousePos, 40, 45);
             highlightText(exitText, worldMousePos, 40, 45);
+            highlightText(leaderBoardText, worldMousePos, 40, 45);
 
             // Center the view for menu
             view.setCenter(sf::Vector2f(0.0f, 0.0f));
@@ -424,10 +434,16 @@ int main() {
             playText.setOrigin(playBounds.width / 2.0f, playBounds.height / 2.0f);
             playText.setPosition(view.getCenter().x, view.getCenter().y);
 
+            // Center the leader Board text
+            sf::FloatRect lbBounds = leaderBoardText.getLocalBounds();
+            leaderBoardText.setOrigin(lbBounds.width / 2.0f, lbBounds.height / 2.0f);
+            leaderBoardText.setPosition(view.getCenter().x, view.getCenter().y + 50.0f);
+
             // Center the exit text
             sf::FloatRect exitBounds = exitText.getLocalBounds();
             exitText.setOrigin(exitBounds.width / 2.0f, exitBounds.height / 2.0f);
-            exitText.setPosition(view.getCenter().x, view.getCenter().y + 50.0f);
+            exitText.setPosition(view.getCenter().x, view.getCenter().y + 100.0f);
+            
 
             // Handle mouse click
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && TRANSITION_TIME > 1) {
@@ -440,6 +456,10 @@ int main() {
                     transitionSound.play();
                     window.close();
                 }
+                else if (leaderBoardText.getGlobalBounds().contains(worldMousePos)) {
+                    transitionSound.play();
+                    gameState = GameState::LeaderBoard; 
+                }
             }
 
             // Draw the menu
@@ -448,6 +468,7 @@ int main() {
 
             window.draw(titleText);
             window.draw(playText);
+            window.draw(leaderBoardText);
             window.draw(exitText);
             window.draw(cursorSprite);
             window.display();
@@ -777,6 +798,51 @@ int main() {
             window.display();
         }
 
+
+        else if (gameState == GameState::LeaderBoard) {
+            TRANSITION_TIME += deltaTime;
+            highlightText(menuText, worldMousePos, 40, 45);
+
+            // Center the leader Board text
+            sf::FloatRect lbBounds = leaderBoardText.getLocalBounds();
+            leaderBoardText.setOrigin(lbBounds.width / 2.0f, lbBounds.height / 2.0f);
+            leaderBoardText.setPosition(view.getCenter().x, view.getCenter().y - 50.0f);
+
+            sf::FloatRect menuBounds = menuText.getLocalBounds();
+            menuText.setOrigin(menuBounds.width / 2.0f, menuBounds.height / 2.0f);
+            menuText.setPosition(view.getCenter().x, view.getCenter().y);
+
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && TRANSITION_TIME > 1) {
+                TRANSITION_TIME = 0;
+                if (menuText.getGlobalBounds().contains(worldMousePos)) {
+                    transitionSound.play();
+                    gameState = GameState::MainMenu;
+                }
+                else if (menuText.getGlobalBounds().contains(worldMousePos)) {
+                    transitionSound.play();
+                    gameState = GameState::MainMenu;
+                }
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ) {
+                // Restart the game
+                gameState = GameState::MainMenu;
+            }
+
+
+            window.clear();
+
+            window.draw(leaderBoardText);
+            window.draw(menuText);
+            window.draw(cursorSprite);
+            window.display();
+
+        }
+
+
+
+
         //////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////
 
@@ -785,7 +851,7 @@ int main() {
         //////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////
 
-        if (gameState == GameState::GameOver) {
+        else if (gameState == GameState::GameOver) {
             TRANSITION_TIME += deltaTime;
 
             // Reset player
@@ -827,10 +893,6 @@ int main() {
             }
 
 
-            // Center the view for menu
-            view.setCenter(sf::Vector2f(0.0f, 0.0f));
-            window.setView(view);
-
             // Center the title text
             sf::FloatRect gameOverBounds = GameOverText.getLocalBounds();
             GameOverText.setOrigin(gameOverBounds.width / 2.0f, gameOverBounds.height / 2.0f);
@@ -860,23 +922,19 @@ int main() {
 
 
             window.clear();
+
             window.draw(backgroundSprite);
-
-
-
             window.draw(GameOverText);
             window.draw(exitText);
-
             window.draw(menuText);
             window.draw(cursorSprite);
 
-            // Optionally, add logic to restart the game or exit
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
                 // Restart the game
-                gameState = GameState::MainMenu; // or reset game variables as needed
+                gameState = GameState::MainMenu; 
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                window.close(); // Exit the game
+                window.close(); 
             }
 
             window.display();
