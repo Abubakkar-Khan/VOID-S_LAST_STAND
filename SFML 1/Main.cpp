@@ -24,9 +24,9 @@ enum class GameState {
 GameState gameState = GameState::MainMenu;
 
 
-sf::Vector2f WORLD_SIZE(1500.0f, 1500.0f);
+sf::Vector2f WORLD_SIZE(2500.0f, 2500.0f);
 
-static const float VIEW_HEIGHT = 512;
+static const float VIEW_HEIGHT = 700;
 float SPAWN_INTERVAL = 2.0f;
 float BULLET_INTERVAL = 0.2f;
 
@@ -302,8 +302,8 @@ int main() {
 
     // Boundry Wall
     sf::FloatRect worldBounds(0, 0, WORLD_SIZE.x, WORLD_SIZE.y);
-    sf::RectangleShape boundary(sf::Vector2f(worldBounds.width - 2, worldBounds.height));
-    boundary.setPosition(worldBounds.left - 5, worldBounds.top - 5);
+    sf::RectangleShape boundary(sf::Vector2f(worldBounds.width, worldBounds.height));
+    boundary.setPosition(worldBounds.left, worldBounds.top );
     boundary.setOutlineColor(sf::Color(255, 55, 55));
     boundary.setOutlineThickness(2);
     boundary.setFillColor(sf::Color::Transparent);
@@ -695,7 +695,6 @@ int main() {
                 }
             }
 
-            
             player.Draw(window); 
 
             // Drawing Enemies 1 by 1
@@ -717,12 +716,15 @@ int main() {
             {
                 gameState = GameState::GameOver;
             }
-
-
-
-
         }
 
+        //////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////
+
+        // GameState = Paused
+
+        //////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////
 
         if (gameState == GameState::Paused) {
 
@@ -730,9 +732,8 @@ int main() {
             highlightText(resumeText, worldMousePos, 40, 45);
             highlightText(menuText, worldMousePos, 40, 45);
 
-            // Center the view for the pause menu
-            view.setCenter(sf::Vector2f(0.0f, 0.0f));
-            window.setView(view);
+            
+            //window.setView(view);
 
             // Center the pause text
             sf::FloatRect pauseBounds = pauseText.getLocalBounds();
@@ -765,13 +766,20 @@ int main() {
             window.clear();
             window.draw(backgroundSprite);
 
-
             window.draw(pauseText);
             window.draw(resumeText);
             window.draw(menuText);
             window.draw(cursorSprite);
             window.display();
         }
+
+        //////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////
+
+        // GameState = Paused
+
+        //////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////
 
 
         else if (gameState == GameState::GameOver) {
