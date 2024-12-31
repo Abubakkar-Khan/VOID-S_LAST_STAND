@@ -68,7 +68,7 @@ int main() {
     settings.antialiasingLevel = 8;
 
     // Rendering Window
-    sf::RenderWindow window(sf::VideoMode(1000, 700), "Void;s Last Stand", sf::Style::Close | sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode(1000, 700), "Void's Last Stand", sf::Style::Close | sf::Style::Fullscreen);
     sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
 
 
