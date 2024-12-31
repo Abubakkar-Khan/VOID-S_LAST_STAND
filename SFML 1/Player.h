@@ -29,5 +29,6 @@ public:
 	float GetHealth() const { return health; }
 	
 	void setDead(bool die) override;
+
 };
 

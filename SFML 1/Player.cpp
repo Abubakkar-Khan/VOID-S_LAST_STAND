@@ -78,5 +78,11 @@ void Player::setDead(bool die)
         std::cout << "Player is DEAD: "<< std::endl;
         std::cout << "GAME OVER: "<< std::endl;
     }
+    if (!die)
+    {
+        dead = false;
+    }
 }
+
+
 

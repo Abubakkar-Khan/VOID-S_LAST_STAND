@@ -781,11 +781,14 @@ int main() {
         //////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////
 
-
-        else if (gameState == GameState::GameOver) {
+        if (gameState == GameState::GameOver) {
 
             // Reset player
             player.setDead(false);
+            if (player.isDead())
+            {
+                cout << "\nAAAAA BBBB UUUU\n";
+            }
             player.setHealth(MAX_PLAYER_HEALTH);
             player.setPosition(WORLD_SIZE.x / 2, WORLD_SIZE.y / 2);
 
