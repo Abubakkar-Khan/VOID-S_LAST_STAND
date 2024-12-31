@@ -129,7 +129,7 @@ int main() {
         WORLD_SIZE.y / backgroundTexture.getSize().y * 2
     );
     backgroundSprite.setPosition(window.getSize().x / 2, window.getSize().y / 2);
-    backgroundSprite.setColor(sf::Color(155, 155, 255, 60));
+    backgroundSprite.setColor(sf::Color(155, 255, 155, 100));
 
 
 
@@ -497,7 +497,7 @@ int main() {
                 // enemy toggle
                 if (e)
                 {
-                    enemies.push_back(new Enemy(&enemyTexture, sf::Vector2u(4, 4), 0.5, sf::Vector2f(30.0f, 40.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
+                    enemies.push_back(new Enemy(&enemyTexture, sf::Vector2u(4, 4), 0.1, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
                     e = false;
                 }
                 else
