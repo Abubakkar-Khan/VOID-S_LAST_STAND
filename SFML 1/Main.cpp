@@ -547,9 +547,7 @@ int main() {
             bullets.push_back(new Bullet(nullptr, player.GetPosition(), worldMousePosInt, 0.0, 0.08f, { 1.0 , 1.0 }));
 
 
-
-
-
+            // Player Damage
             for (auto& enemy : enemies) {
                 if (enemy->GetCollider().CheckCollision(player.GetCollider(), 1.0f))
                 {
@@ -557,31 +555,56 @@ int main() {
                 }
             }
 
+
+            ////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////
+
+            // UX / UX
+
+            ////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////
+
+            
             view.setCenter(player.GetPosition());
 
             //////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////
 
             // UI / UX
-            timerText.setPosition(player.GetPosition().x, player.GetPosition().y - view.getSize().y / 2.2);
-            timerText.setOrigin(timerText.getLocalBounds().width / 2, timerText.getLocalBounds().height / 2);  // Set origin to the center of the text
 
-            HealthBar healthBar(MAX_PLAYER_HEALTH, sf::Vector2f(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.3), sf::Vector2f(150.0f, 5.0f));
-            scoreText.setPosition(player.GetPosition().x + view.getSize().x / 3, player.GetPosition().y - view.getSize().y / 2.3);
-            healthLabel.setPosition(player.GetPosition().x - view.getSize().x / 2.6, player.GetPosition().y - view.getSize().y / 2.1f);
-            scoreLabel.setPosition(player.GetPosition().x + view.getSize().x / 2.85, player.GetPosition().y - view.getSize().y / 2.1f);
+            //////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////
 
+            // Timer Text
             timerText.setOrigin(timerText.getLocalBounds().width / 2, timerText.getLocalBounds().height / 2);
-            scoreText.setOrigin(scoreText.getLocalBounds().width / 2, scoreText.getLocalBounds().height / 2);
-            healthLabel.setOrigin(healthLabel.getLocalBounds().width / 2, healthLabel.getLocalBounds().height / 2);
+            timerText.setPosition(player.GetPosition().x, player.GetPosition().y - view.getSize().y / 2.2);
 
+            // Health Bar Display
+            HealthBar healthBar(MAX_PLAYER_HEALTH, sf::Vector2f(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.3), sf::Vector2f(150.0f, 5.0f));
             healthBar.Update(player.GetHealth());
 
-            playText.setPosition(view.getCenter().x, view.getCenter().y);
+            // Health Label
+            healthLabel.setOrigin(healthLabel.getLocalBounds().width / 2, healthLabel.getLocalBounds().height / 2);
+            healthLabel.setPosition(player.GetPosition().x - view.getSize().x / 2.6, player.GetPosition().y - view.getSize().y / 2.1f);
+
+            // Score Text
+            scoreText.setOrigin(scoreText.getLocalBounds().width / 2, scoreText.getLocalBounds().height / 2);
+            scoreText.setPosition(player.GetPosition().x + view.getSize().x / 3, player.GetPosition().y - view.getSize().y / 2.3);
+
+            // Score Label
+            scoreLabel.setPosition(player.GetPosition().x + view.getSize().x / 2.85, player.GetPosition().y - view.getSize().y / 2.1f);
+
+
+            // Main menu text
             titleText.setPosition(view.getCenter().x, view.getCenter().y - 40);
+            playText.setPosition(view.getCenter().x, view.getCenter().y);
+
+            // Pause Menu Text position
             pauseText.setPosition(view.getCenter().x, view.getCenter().y / 2 - 40);
             resumeText.setPosition(view.getCenter().x, view.getCenter().y - 20);
             menuText.setPosition(view.getCenter().x, view.getCenter().y + 40);
+
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
