@@ -430,7 +430,8 @@ int main() {
             exitText.setPosition(view.getCenter().x, view.getCenter().y + 50.0f);
 
             // Handle mouse click
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && TRANSITION_TIME > 1) {
+                TRANSITION_TIME = 0;
                 if (playText.getGlobalBounds().contains(worldMousePos)) {
                     transitionSound.play();
                     gameState = GameState::Playing; // Start the game
@@ -463,7 +464,6 @@ int main() {
 
 
         else if (gameState == GameState::Playing) {
-            TRANSITION_TIME += deltaTime;
 
             // Game logic and rendering
             window.clear();
@@ -731,7 +731,6 @@ int main() {
         //////////////////////////////////////////////////////////////////////////////////
 
         if (gameState == GameState::Paused) {
-            TRANSITION_TIME += deltaTime;
 
             // Highlight the texts for pause menu options
             highlightText(resumeText, worldMousePos, 40, 45);
@@ -846,7 +845,7 @@ int main() {
             menuText.setPosition(view.getCenter().x, view.getCenter().y);
 
             // Handle mouse click
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && TRANSITION_TIME > 2) {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && TRANSITION_TIME > 1) {
                 TRANSITION_TIME = 0;
                 if (exitText.getGlobalBounds().contains(worldMousePos)) {
                     transitionSound.play();
