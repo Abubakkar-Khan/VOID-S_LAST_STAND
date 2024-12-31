@@ -801,12 +801,16 @@ int main() {
 
         else if (gameState == GameState::LeaderBoard) {
             TRANSITION_TIME += deltaTime;
+
+            leaderBoardText.setFillColor(sf::Color::White);
+            leaderBoardText.setOutlineThickness(0.0f);
+
             highlightText(menuText, worldMousePos, 40, 45);
 
             // Center the leader Board text
             sf::FloatRect lbBounds = leaderBoardText.getLocalBounds();
             leaderBoardText.setOrigin(lbBounds.width / 2.0f, lbBounds.height / 2.0f);
-            leaderBoardText.setPosition(view.getCenter().x, view.getCenter().y - 50.0f);
+            leaderBoardText.setPosition(view.getCenter().x, view.getCenter().y - 300);
 
             sf::FloatRect menuBounds = menuText.getLocalBounds();
             menuText.setOrigin(menuBounds.width / 2.0f, menuBounds.height / 2.0f);
