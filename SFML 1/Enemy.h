@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "Entity.h"
 
-class Enemy : public Entity
+class Enemy : virtual public Entity
 {
 private:
 	Animation animation;

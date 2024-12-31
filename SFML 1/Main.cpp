@@ -129,7 +129,7 @@ int main() {
         WORLD_SIZE.y / backgroundTexture.getSize().y * 2
     );
     backgroundSprite.setPosition(window.getSize().x / 2, window.getSize().y / 2);
-    backgroundSprite.setColor(sf::Color(155, 255, 155, 100));
+    backgroundSprite.setColor(sf::Color(255, 55, 55, 100));
 
 
 
@@ -330,7 +330,10 @@ int main() {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    while (window.isOpen()) {
+    while (window.isOpen()) { 
+        
+        // 😎
+        
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Vector2f worldMousePos = window.mapPixelToCoords(mousePos, view);
 
@@ -368,6 +371,14 @@ int main() {
                 break;
             }
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 
+        // GameState Main Menu
+        // 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         if (gameState == GameState::MainMenu) {
             // Reset player
@@ -443,23 +454,24 @@ int main() {
         }
 
 
-
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 
+        // GameState Playing
+        // 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         else if (gameState == GameState::Playing) {
             // Game logic and rendering
             window.clear();
 
+            // Game Over Sound : False
             gameOverS = false;
 
 
 
             elapsedTime += deltaTime;
-
-            if (SPAWN_INTERVAL > 1.0f)
-                SPAWN_INTERVAL -= deltaTime * deltaTime;
-            else
-                SPAWN_INTERVAL = 1.0f;
-
             int minutes = static_cast<int>(elapsedTime) / 60;
             int seconds = static_cast<int>(elapsedTime) % 60;
 
@@ -472,14 +484,27 @@ int main() {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             sf::Vector2f worldMousePos = window.mapPixelToCoords(mousePos, view);
 
-            sf::Vector2i worldMousePosInt(static_cast<int>(worldMousePos.x), static_cast<int>(worldMousePos.y));
+            sf::Vector2i worldMousePosInt(static_cast<sf::Vector2i>(worldMousePos));
 
-            player.Update(deltaTime, worldMousePosInt);
-            sf::Vector2f playerPos = player.GetPosition();
+            
+            player.Update(deltaTime, worldMousePosInt); // Update Player 
+            sf::Vector2f playerPos = player.GetPosition(); // Player Position vector2
 
 
             ////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////
+            
+            // Enemy Spawning
+            
+            ////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Decrease the Spawn time of Enemies spawning
+            if (SPAWN_INTERVAL > 0.9f)
+                SPAWN_INTERVAL -= deltaTime * deltaTime;
+            else
+                SPAWN_INTERVAL = 0.9f;
+
 
             // Spawn new enemies after the interval
             spawnTimer += deltaTime;
@@ -489,10 +514,10 @@ int main() {
 
                 float spawnX = (rand() % 2 == 0) ? -50.0f : window.getSize().x + 50.0f;
                 float spawnY = (rand() % 2 == 0) ? -50.0f : window.getSize().y + 50.0f;
-                //body.setFillColor(sf::Color::Yellow); // Entity color
+               
 
-                spawnX += rand() % 100 - 50; // -50 to 49 random 
-                spawnY += rand() % 100 - 50;
+                spawnX += rand() % 100 - 70; // -70 to 29 random 
+                spawnY += rand() % 100 - 70;
 
                 // enemy toggle
                 if (e)
@@ -502,23 +527,33 @@ int main() {
                 }
                 else
                 {
-                    enemies.push_back(new Enemy(&enemyTexture2, sf::Vector2u(8, 1), 0.1, sf::Vector2f(80.0f, 80.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH + 4));
+                    enemies.push_back(new Enemy(&enemyTexture2, sf::Vector2u(8, 1), 0.05, sf::Vector2f(80.0f, 80.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH + 4));
                     e = true;
                 }
 
             }
 
-            bulletTimer += deltaTime;
+            ////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Bullet Spawning
+
+            ////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////
+
+            bulletTimer += deltaTime; // Incrementing bullet spawn Timer
+
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bulletTimer >= BULLET_INTERVAL)
             {
-                bullets.push_back(new Bullet(&bulletTexture, player.GetPosition(), worldMousePosInt, 800.0, 3.0f, { 20.0 , 20.0 }));
+                bullets.push_back(new Bullet(&bulletTexture, player.GetPosition(), worldMousePosInt, 800.0f, 3.0f, { 20.0f , 20.0f }));
                 bulletSound.play();
                 bulletTimer = 0;
             }
-            bullets.push_back(new Bullet(nullptr, player.GetPosition(), worldMousePosInt, 0.0, 0.08f, { 1.0 , 1.0 }));
+            // Bullet Used as Trail
+            bullets.push_back(new Bullet(nullptr, player.GetPosition(), worldMousePosInt, 0.0, 0.08f, { 1.0f, 1.0f }));
 
             for (auto& enemy : enemies) {
-                if (enemy->GetCollider().CheckCollision(player.GetCollider(), 0.0f))
+                if (enemy->GetCollider().CheckCollision(player.GetCollider(), 1.0f))
                 {
                     player.setDead(true);
                 }
@@ -528,31 +563,49 @@ int main() {
 
             //////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////
-
+    
             // UI / UX
-            timerText.setPosition(player.GetPosition().x, player.GetPosition().y - view.getSize().y / 2.2);
-            timerText.setOrigin(timerText.getLocalBounds().width / 2, timerText.getLocalBounds().height / 2);  // Set origin to the center of the text
 
+            //////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Timer Text
+            timerText.setOrigin(timerText.getLocalBounds().width / 2, timerText.getLocalBounds().height / 2);
+            timerText.setPosition(player.GetPosition().x, player.GetPosition().y - view.getSize().y / 2.2);
+            
+            // Health Bar Display
             HealthBar healthBar(MAX_PLAYER_HEALTH, sf::Vector2f(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.3), sf::Vector2f(150.0f, 5.0f));
-            scoreText.setPosition(player.GetPosition().x + view.getSize().x / 3, player.GetPosition().y - view.getSize().y / 2.3);
+            healthBar.Update(player.GetHealth());
+            
+            // Health Label
+            healthLabel.setOrigin(healthLabel.getLocalBounds().width / 2, healthLabel.getLocalBounds().height / 2);
             healthLabel.setPosition(player.GetPosition().x - view.getSize().x / 2.6, player.GetPosition().y - view.getSize().y / 2.1f);
+            
+            // Score Text
+            scoreText.setOrigin(scoreText.getLocalBounds().width / 2, scoreText.getLocalBounds().height / 2);
+            scoreText.setPosition(player.GetPosition().x + view.getSize().x / 3, player.GetPosition().y - view.getSize().y / 2.3);
+            
+            // Score Label
             scoreLabel.setPosition(player.GetPosition().x + view.getSize().x / 2.85, player.GetPosition().y - view.getSize().y / 2.1f);
 
-            timerText.setOrigin(timerText.getLocalBounds().width / 2, timerText.getLocalBounds().height / 2);
-            scoreText.setOrigin(scoreText.getLocalBounds().width / 2, scoreText.getLocalBounds().height / 2);
-            healthLabel.setOrigin(healthLabel.getLocalBounds().width / 2, healthLabel.getLocalBounds().height / 2);
 
-            healthBar.Update(player.GetHealth());
-
-            playText.setPosition(view.getCenter().x, view.getCenter().y);
+            // Main menu text
             titleText.setPosition(view.getCenter().x, view.getCenter().y - 40);
+            playText.setPosition(view.getCenter().x, view.getCenter().y);
+       
+            // Pause Menu Text position
             pauseText.setPosition(view.getCenter().x, view.getCenter().y / 2 - 40);
             resumeText.setPosition(view.getCenter().x, view.getCenter().y - 20);
             menuText.setPosition(view.getCenter().x, view.getCenter().y + 40);
+            
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // Player clamping (keep player inside world bounds)
+           
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
             sf::Vector2f playerSize = player.GetSize();
 
             if (playerPos.x < worldBounds.left)
@@ -572,16 +625,20 @@ int main() {
 
             /////////////////////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////////////////////////
-
+            
             // Check Enemies-Enemies Collisions
-            for (size_t i = 0; i < enemies.size(); ++i)
+            
+            /////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////
+
+            for (size_t i = 0; i < enemies.size() - 1; ++i)
                 for (size_t j = i + 1; j < enemies.size(); ++j)
                     enemies[i]->GetCollider().CheckCollision(enemies[j]->GetCollider(), 0.0f);
 
 
-
             window.clear();
 
+            
             window.draw(backgroundSprite);
             window.draw(boundary);
 
@@ -643,8 +700,6 @@ int main() {
             scoreText.setString(scoreString);
 
 
-
-
             for (auto& enemy : enemies)
                 enemy->Update(playerPos, deltaTime);
 
@@ -669,9 +724,6 @@ int main() {
             {
                 gameState = GameState::GameOver;
             }
-
-
-
 
         }
 
@@ -761,8 +813,6 @@ int main() {
                 gameOverSound.play();
                 gameOverS = true;
             }
-
-
 
 
 

@@ -4,7 +4,7 @@
 #include "Collider.h"
 #include "Entity.h"
 
-class Player : public Entity
+class Player : virtual public Entity
 {
 private:
 	Animation animation;
