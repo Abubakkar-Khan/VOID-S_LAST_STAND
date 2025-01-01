@@ -65,7 +65,7 @@ void highlightText(sf::Text& text, sf::Vector2f worldMousePos, int defaultSize, 
 
 int main() {
     sf::ContextSettings settings;
-    settings.antialiasingLevel = 8;
+    settings.antialiasingLevel = 2;
 
     // Rendering Window
     sf::RenderWindow window(sf::VideoMode(1000, 700), "Void's Last Stand", sf::Style::Close | sf::Style::Fullscreen);
@@ -106,9 +106,11 @@ int main() {
         return -1;
     }
 
+    // Aim Sprite
     sf::Sprite cursorSprite(cursorTexture);
     cursorSprite.setOrigin(cursorTexture.getSize().x / 2.0f, cursorTexture.getSize().y / 2.0f);
-    cursorSprite.setScale(0.5f, 0.5f);
+    cursorSprite.setScale(1.0f, 1.0f);
+
 
     sf::Texture bulletTexture;
     if (!bulletTexture.loadFromFile("textures/11.png"))
@@ -122,6 +124,7 @@ int main() {
         cerr << "Error loading background texture!" << endl;
         return -1;
     }
+    // background sprite
     sf::Sprite backgroundSprite(backgroundTexture);
     backgroundSprite.setOrigin(backgroundSprite.getLocalBounds().width / 2, backgroundSprite.getLocalBounds().height / 2);
 
