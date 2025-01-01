@@ -572,7 +572,7 @@ int main() {
             timerText.setPosition(player.GetPosition().x, player.GetPosition().y - view.getSize().y / 2.2);
 
             // Health Bar Display
-            HealthBar healthBar(MAX_PLAYER_HEALTH, sf::Vector2f(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.3), sf::Vector2f(150.0f, 5.0f));
+            HealthBar healthBar(MAX_PLAYER_HEALTH, sf::Vector2f(player.GetPosition().x - view.getSize().x / 2.2, player.GetPosition().y - view.getSize().y / 2.3), sf::Vector2f(180.0f, 5.0f));
             healthBar.Update(player.GetHealth());
 
             // Health Label
