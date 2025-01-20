@@ -7,19 +7,20 @@ VOID's LAST STAND is a 2D top-down shooter game built using **SFML** (Simple and
 ## Features
 - **Dynamic Gameplay**: Real-time movement, shooting, and enemy AI.
 - **Player Mechanics**:
-  - Health bar and collision detection.
   - Precise mouse-controlled aiming.
-  - Smooth movement clamped within game boundaries.
+  - Smooth 8-Direction movement clamped within game boundaries.
 - **Enemies**:
   - Randomized spawn locations.
   - Collision detection with the player and other enemies.
   - Health and destructibility.
-- **Weapons**:
+- **Laser-Based Attack Mechanic**:
   - Player can shoot bullets with customizable intervals.
-  - Collisions between bullets and enemies.
+- **Collision Detection**:
+  - Collision detection Between Objects.
 - **Audio**:
   - Laser firing sounds.
   - Enemy destruction sound effects.
+  - Transition sound effects.
 - **Game States**:
   - Main Menu (with play and exit buttons).
   - Game (with controls and Pause option with 'ESC').
@@ -33,8 +34,8 @@ VOID's LAST STAND is a 2D top-down shooter game built using **SFML** (Simple and
 
 ## Gameplay
 1. **Main Menu**:
-   - Press **Enter** to start the game.
-   - Press **Escape** to quit.
+   - Click **Enter** to start the game.
+   - Click **Escape** to quit.
 2. **Controls**:
    - **Mouse Left-Click**: Shoot bullets.
    - **Mouse Movement**: Aim the player's weapon.
@@ -119,7 +120,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 <img src="screen_shots/shot1.png" alt="Gameplay Screenshot 1" style="width: 100%; max-width: 600px;">
 
 ### Main Menu
-<img src="screen_shots/shot2.png" alt="Main Menu Screenshot" style="width: 100%; max-width: 600px;">
+<img src="screen_shots/shot4.png" alt="Main Menu Screenshot" style="width: 100%; max-width: 600px;">
 
 ### Pause Screen
 <img src="screen_shots/shot3.png" alt="Pause Screen Screenshot" style="width: 100%; max-width: 600px;">
