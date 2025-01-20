@@ -74,8 +74,8 @@ VOID's LAST STAND
 │   │   ├── Transition_3.wav
 │   │   ├── gameover.mp3
 │   │   └── explode.mp3
-│   └── Fonts/
-│       └── V.ttf
+│   ├── Fonts/
+│   │   └── V.ttf
 │   ├── main.cpp
 │   ├── Player.h / Player.cpp
 │   ├── Bullet.h / Bullet.cpp
