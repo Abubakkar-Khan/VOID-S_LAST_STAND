@@ -21,8 +21,9 @@ VOID's LAST STAND is a 2D top-down shooter game built using **SFML** (Simple and
   - Laser firing sounds.
   - Enemy destruction sound effects.
 - **Game States**:
-  - Main Menu with instructions.
-  - Pause and Resume functionality.
+  - Main Menu (with play and exit buttons).
+  - Game (with controls and Pause option with 'ESC').
+  - Pause (with Resume and Main Menu buttons).
 - **UI**:
   - Dynamic score display.
   - Timer to track survival duration.
