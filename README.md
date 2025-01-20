@@ -109,10 +109,10 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Screenshots
 
 ### Gameplay
-<img src="screen_shots/shot1.png" alt="Gameplay Screenshot 1" width="400">
+<img src="screen_shots/shot1.png" alt="Gameplay Screenshot 1" style="width: 100%; max-width: 600px;">
 
 ### Main Menu
-<img src="screen_shots/shot2.png" alt="Main Menu Screenshot" width="400">
+<img src="screen_shots/shot2.png" alt="Main Menu Screenshot" style="width: 100%; max-width: 600px;">
 
 ### Pause Screen
-<img src="screen_shots/shot3.png" alt="Pause Screen Screenshot" width="400">
+<img src="screen_shots/shot3.png" alt="Pause Screen Screenshot" style="width: 100%; max-width: 600px;">
