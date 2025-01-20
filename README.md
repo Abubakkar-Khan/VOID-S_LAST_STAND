@@ -90,6 +90,13 @@ VOID's LAST STAND
 
 ---
 
+## Architecture
+The following class diagram illustrates the relationships and dependencies between key components of the game:
+
+![Class Diagram](/screen_shots/class%20diagram.png)
+
+---
+
 ## Dependencies
 - **SFML** (2.5.1 or later):
   - Graphics, Audio, and Window modules.
