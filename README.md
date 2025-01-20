@@ -62,7 +62,7 @@ VOID's LAST STAND is a 2D top-down shooter game built using **SFML** (Simple and
 ## File Structure
 ```
 VOID's LAST STAND
-├── Assets/
+├── SFML 1/
 │   ├── Textures/
 │   │   ├── ship2.png (Player, Enemy 1)
 │   │   ├── enemy3.png (Enemy 2)
@@ -76,7 +76,6 @@ VOID's LAST STAND
 │   │   └── explode.mp3
 │   └── Fonts/
 │       └── V.ttf
-├── src/
 │   ├── main.cpp
 │   ├── Player.h / Player.cpp
 │   ├── Bullet.h / Bullet.cpp
