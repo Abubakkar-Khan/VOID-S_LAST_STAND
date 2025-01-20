@@ -101,5 +101,12 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ---
 
 ## Screenshots
-Add some screenshots or gameplay GIFs to showcase your game.
 
+### Gameplay
+<img src="screen_shots/shot1.png" alt="Gameplay Screenshot 1" width="400">
+
+### Main Menu
+<img src="screen_shots/shot2.png" alt="Main Menu Screenshot" width="400">
+
+### Pause Screen
+<img src="screen_shots/shot3.png" alt="Pause Screen Screenshot" width="400">

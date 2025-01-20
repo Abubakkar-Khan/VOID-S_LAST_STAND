@@ -9,7 +9,7 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "HealthBar.h"
-
+   
 using namespace std;
 
 const float MAX_PLAYER_HEALTH = 100.0f;
