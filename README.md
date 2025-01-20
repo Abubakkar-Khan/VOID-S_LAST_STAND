@@ -105,7 +105,7 @@ VOID's LAST STAND
 ---
 
 ## Architecture
-The following class diagram illustrates the relationships and dependencies between key components of the game:
+The following **class diagram** illustrates the relationships and dependencies between key components of the game:
 
 ![Class Diagram](/screen_shots/class%20diagram.png)
 
