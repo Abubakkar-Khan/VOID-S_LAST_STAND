@@ -1,11 +1,11 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
 
 class Collider
 {
 private:
 	sf::RectangleShape& body;
-
 
 public:
 	Collider(sf::RectangleShape& body);

@@ -12,10 +12,11 @@ private:
 
 	float health;
 	unsigned int row;
+	float speed;
 
 
 public:
-	Enemy(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, sf::Vector2f size, sf::Vector2f position, float health);
+	Enemy(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, sf::Vector2f size, sf::Vector2f position, float health, float speed);
 	
 	void Update(sf::Vector2f playerPos, float daltaTime);
 

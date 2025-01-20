@@ -17,7 +17,7 @@ Bullet::Bullet(sf::Texture* texture, sf::Vector2f position, sf::Vector2i target,
     }
 
     // Calculate the angle in radians and convert it to degrees
-    float angle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159f;  // atan2 returns the angle in radians
+    float angle = atan2(direction.y, direction.x) * 180.0f / 3.14159f;  // atan2 returns the angle in radians
 
     body.setRotation(angle); 
     velocity = direction * speed; 
@@ -36,7 +36,7 @@ bool Bullet::isDead()
     if (age >= lifetime)
         dead = true;
     else
-        dead = false;  // Bullet is still alive
+        dead = false; 
     return dead;
 }
 

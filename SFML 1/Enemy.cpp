@@ -3,7 +3,8 @@
 #include <iostream>
 
 Enemy::Enemy(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
-    sf::Vector2f size, sf::Vector2f position, float health) : Entity(texture, position, size), animation(texture, imageCount, switchTime), health(health)
+    sf::Vector2f size, sf::Vector2f position, float health, float speed) 
+    : Entity(texture, position, size), animation(texture, imageCount, switchTime), health(health), speed(speed)
 {
     row = 0;
 
@@ -29,7 +30,7 @@ void Enemy::Update(sf::Vector2f playerPos, float daltaTime)
     body.setRotation(angle + 90);
 
     // Move the enemy towards the player
-    float speed = 100.f;  // Speed of the enemy
+    
     body.setTextureRect(animation.uvRect);
     body.move(direction * speed * daltaTime);  // Move with a multiplier to adjust speed
 }

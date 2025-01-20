@@ -124,12 +124,13 @@ int main() {
         cerr << "Error loading background texture!" << endl;
         return -1;
     }
+
     // background sprite
     sf::Sprite backgroundSprite(backgroundTexture);
     backgroundSprite.setOrigin(backgroundSprite.getLocalBounds().width / 2, backgroundSprite.getLocalBounds().height / 2);
 
     backgroundSprite.setScale(
-        WORLD_SIZE.x / backgroundTexture.getSize().y * 2,
+        WORLD_SIZE.x / backgroundTexture.getSize().x * 2,
         WORLD_SIZE.y / backgroundTexture.getSize().y * 2
     );
     backgroundSprite.setPosition(window.getSize().x / 2, window.getSize().y / 2);
@@ -191,7 +192,7 @@ int main() {
     playText.setCharacterSize(40);
     playText.setFillColor(sf::Color::White);
     playText.setString("Play");
-    playText.setOrigin(playText.getLocalBounds().width / 2, playText.getLocalBounds().height / 2);
+    //playText.setOrigin(playText.getLocalBounds().width / 2, playText.getLocalBounds().height / 2);
 
     sf::Text exitText;
     exitText.setFont(font);
@@ -317,6 +318,7 @@ int main() {
     vector<Bullet*> bullets;
     vector<Enemy*> enemies;
 
+    float enemySpeed = 80.f;
     float spawnTimer = 0.0f; // For Enemy Spawn time
     float bulletTimer = 0.0f; // For Bullet Time
     static float elapsedTime = 0; // For timer
@@ -517,15 +519,18 @@ int main() {
                 spawnX += rand() % 100 - 50; // -50 to 49 random 
                 spawnY += rand() % 100 - 50;
 
+                enemySpeed += 20 * deltaTime ;
+                cout << "Enemy Speed: " << enemySpeed << endl;
+
                 // enemy toggle
                 if (e)
                 {
-                    enemies.push_back(new Enemy(&enemyTexture, sf::Vector2u(4, 4), 0.1, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH));
+                    enemies.push_back(new Enemy(&enemyTexture, sf::Vector2u(4, 4), 0.1, sf::Vector2f(50.0f, 50.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH, enemySpeed * 2));
                     e = false;
                 }
                 else
                 {
-                    enemies.push_back(new Enemy(&enemyTexture2, sf::Vector2u(8, 1), 0.1, sf::Vector2f(80.0f, 80.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH + 4));
+                    enemies.push_back(new Enemy(&enemyTexture2, sf::Vector2u(8, 1), 0.1, sf::Vector2f(80.0f, 80.0f), sf::Vector2f(spawnX, spawnY), ENEMY_HEALTH + 4, enemySpeed));
                     e = true;
                 }
 
@@ -640,7 +645,7 @@ int main() {
             // Enemy Update
             for (auto& enemy : enemies)
                 enemy->Update(playerPos, deltaTime);
-
+            
             // Score updated String
             string scoreString = to_string(score);
             scoreText.setString(scoreString);
