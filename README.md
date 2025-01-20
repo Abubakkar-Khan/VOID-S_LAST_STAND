@@ -4,6 +4,20 @@ VOID's LAST STAND is a 2D top-down shooter game built using **SFML** (Simple and
 
 ---
 
+## Screenshots
+
+### Gameplay
+<img src="screen_shots/shot1.png" alt="Gameplay Screenshot 1" style="width: 100%; max-width: 600px;">
+
+### Main Menu
+<img src="screen_shots/shot4.png" alt="Main Menu Screenshot" style="width: 100%; max-width: 600px;">
+
+### Pause Screen
+<img src="screen_shots/shot3.png" alt="Pause Screen Screenshot" style="width: 100%; max-width: 600px;">
+
+---
+
+
 ## Features
 - **Dynamic Gameplay**: Real-time movement, shooting, and enemy AI.
 - **Player Mechanics**:
@@ -111,15 +125,3 @@ Contributions are welcome! Feel free to fork the repository and submit pull requ
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
----
-
-## Screenshots
-
-### Gameplay
-<img src="screen_shots/shot1.png" alt="Gameplay Screenshot 1" style="width: 100%; max-width: 600px;">
-
-### Main Menu
-<img src="screen_shots/shot4.png" alt="Main Menu Screenshot" style="width: 100%; max-width: 600px;">
-
-### Pause Screen
-<img src="screen_shots/shot3.png" alt="Pause Screen Screenshot" style="width: 100%; max-width: 600px;">
